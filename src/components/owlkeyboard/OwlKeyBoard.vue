@@ -54,7 +54,7 @@
         <br>
 
         <!-- 第二行 -->
-        <OwlKeyBoardItem  key-value="Caps" :width-value="95"/>
+        <OwlKeyBoardItem  key-value="Caps" :width-value="95" :caps-flag="true"/>
         <OwlKeyBoardItem  key-value="A"/>
         <OwlKeyBoardItem  key-value="S"/>
         <OwlKeyBoardItem  key-value="D"/>

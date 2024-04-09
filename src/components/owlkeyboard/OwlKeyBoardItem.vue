@@ -6,7 +6,12 @@
     <div class="key-board-item" 
         :style="{width: widthValue + 'px',height:heightValue+'px',lineHeight:heightValue+'px'}"
         :class="{keyItemPress:keyItemPressFlag}">
+
+        <div class="capsdot" v-if="capsShowFlag && capsFlag"></div>
         {{ keyValue }}
+
+       
+        
     </div>
 </template>
 
@@ -15,24 +20,22 @@
     import { ref,onMounted,onBeforeUnmount } from 'vue';
     import type {Ref} from 'vue';
 
-    // 先定义一个接口
-    interface KeyItemProps{
-        keyValue?:string, // 键盘按键的值
-        widthValue?:number, // 键盘按键的宽度，默认是 50px
-        heightValue?:number, // 键盘按键的高度，默认是 50px
-        
-    }
+    import type {KeyItem,KeyItemProps} from './OwlKeyBoardType'
+
+    
    const props =  defineProps<KeyItemProps>()
 
    // 键盘按键 按下的标识
    const keyItemPressFlag:Ref<boolean> = ref(false)
 
+  // 大写的标识
+  const capsShowFlag:Ref<boolean> = ref(false)
 
     // 键盘按键的基本数据对象
-    interface KeyItem{
-        keyCode:number,
-        keyValue:string | number
-    }
+    // interface KeyItem{
+    //     keyCode:number,
+    //     keyValue:string | number
+    // }
 
     let keyItemList:KeyItem[] = [
 
@@ -113,6 +116,11 @@
 
     // console.log(event.keyCode,props.keyValue)
 
+    // 判断是否是 Caps 按键，如果是，则点亮小按钮
+    if(event.keyCode == 20){
+        capsShowFlag.value = !capsShowFlag.value;
+    }
+
     // 判断键盘的值，对应的点亮某个按键
     for(let i = 0;i < keyItemList.length;i++){
         let item = keyItemList[i];
@@ -122,11 +130,8 @@
         }
     }
 
-    // if(event.keyCode == 81 && props.keyValue == 'Q'){
-    //     keyItemPressFlag.value = true
-    // }else if(event.keyCode == 87 && props.keyValue == 'W'){
-    //     keyItemPressFlag.value = true
-    // }
+    
+
    }
 
    /**
@@ -173,11 +178,22 @@
 
     }
 
+    .capsdot{
+        width: 6px;
+        height: 6px;
+        border-radius: 6px;
+        background-color: greenyellow;
+        display: inline-block;
+        position: absolute;
+        margin-top: 5px;
+        margin-left: -23px;
+    }
+
     .keyItemPress{
         color: white;
         box-shadow: 0px 0px 10px 0px rgb(6, 191, 197);
         background-image: radial-gradient(circle, #b878ea, #7d9eff, #13bcff, #00d4ff, #00e8ff, #00f1f6, #00f8e7, #00ffd3, #40ffb1, #70ff88, #9eff58, #ccfc00);
         /* background-image: radial-gradient(circle, #d16ba5, #c777b9, #ba83ca, #aa8fd8, #9a9ae1, #8aa7ec, #79b3f4, #69bff8, #52cffe, #41dfff, #46eefa, #5ffbf1); */
        
-       }
+    }
 </style>
