@@ -11,12 +11,13 @@
       <!-- 顶部的头像 -->
       <OwlAvatar :img-url="avatarUrl" nick-name="owl-Master"/>
       
-
-      键盘战士
+      <!-- 菜单内容 -->
+      <OwlMenuPanel />
+      
     </div>
     <!-- 右侧的主要内容 -->
     <div class="content">
-      <RouterView />
+      <!-- <RouterView /> -->
     </div>
   </div>
 </template>
@@ -27,7 +28,12 @@ import {ref} from 'vue'
 
 import { RouterView } from 'vue-router'
 
+// 头像组件
 import OwlAvatar from '../components/owlAvatar/OwlAvatar.vue'
+
+// 菜单组件
+import OwlMenuPanel from '../components/owlMenuPanel/OwlMenuPanel.vue'
+
 
 // 头像的图片地址
 const avatarUrl = ref('/owl.png')
@@ -46,12 +52,13 @@ const avatarUrl = ref('/owl.png')
 
   .menu{
     flex: 1;
-    border: 1px solid red;
+    border: 0px solid red;
     text-align: center;
   }
   .content{
     flex:9;
-    border: 1px solid red;
+    border: 0px solid red;
+    background-color: rgb(0, 0, 0);
   }
 
   .avatar-box{
