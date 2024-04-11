@@ -58,10 +58,10 @@
         <OwlKeyBoardItem  key-value="A"/>
         <OwlKeyBoardItem  key-value="S"/>
         <OwlKeyBoardItem  key-value="D"/>
-        <OwlKeyBoardItem  key-value="F"/>
+        <OwlKeyBoardItem  key-value="F" :fj-flag="true"/>
         <OwlKeyBoardItem  key-value="G"/>
         <OwlKeyBoardItem  key-value="H"/>
-        <OwlKeyBoardItem  key-value="J"/>
+        <OwlKeyBoardItem  key-value="J" :fj-flag="true"/>
         <OwlKeyBoardItem  key-value="K"/>
         <OwlKeyBoardItem  key-value="L"/>
         <OwlKeyBoardItem  key-value="; :"/>

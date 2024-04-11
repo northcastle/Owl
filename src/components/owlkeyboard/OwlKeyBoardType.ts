@@ -6,6 +6,7 @@ export interface KeyItemProps{
     widthValue?:number, // 键盘按键的宽度，默认是 50px
     heightValue?:number, // 键盘按键的高度，默认是 50px
     capsFlag?:boolean, // 标识是大写的按键
+    fjFlag?:boolean, // F J 按键的下方的短横线
     
 }
 

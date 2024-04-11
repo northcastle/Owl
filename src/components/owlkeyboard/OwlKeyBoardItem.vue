@@ -10,6 +10,7 @@
         <div class="capsdot" v-if="capsShowFlag && capsFlag"></div>
         {{ keyValue }}
 
+        <div class="fjitem" v-if="fjFlag"></div>
        
         
     </div>
@@ -187,6 +188,15 @@
         position: absolute;
         margin-top: 5px;
         margin-left: -23px;
+    }
+    .fjitem{
+        width: 15px;
+        height: 1.5px;
+        border-radius: 10px;
+        background-color: black;
+        position: absolute;
+        margin-top: -9px;
+        margin-left: 12px;
     }
 
     .keyItemPress{
