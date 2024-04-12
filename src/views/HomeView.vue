@@ -17,7 +17,7 @@
     </div>
     <!-- 右侧的主要内容 -->
     <div class="content">
-      <!-- <RouterView /> -->
+      <RouterView />
     </div>
   </div>
 </template>
@@ -43,7 +43,9 @@ const avatarUrl = ref('/owl.png')
 <style scoped>
 
   .home-view{
-    border: 1px solid red;
+    border: 1px solid rgb(0, 0, 0);
+    border-radius: 10px;
+    box-shadow: 0px 0px 10px rgb(187, 184, 184);
     width: 1200px;
     height: 800px;
     display: flex;
@@ -58,6 +60,7 @@ const avatarUrl = ref('/owl.png')
   .content{
     flex:9;
     border: 0px solid red;
+    border-radius: 0px 10px 10px 0px;
     background-color: rgb(0, 0, 0);
   }
 
