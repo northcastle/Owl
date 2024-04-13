@@ -12,7 +12,7 @@
       <OwlAvatar :img-url="avatarUrl" nick-name="owl-Master"/>
       
       <!-- 菜单内容 -->
-      <OwlMenuPanel />
+      <OwlMenuPanel :default-menu="defaultMenuRouter" :menu-list="menuList"/>
       
     </div>
     <!-- 右侧的主要内容 -->
@@ -24,9 +24,12 @@
 
 <script setup lang="ts">
 
-import {ref} from 'vue'
+import {ref,reactive} from 'vue'
 
 import { RouterView } from 'vue-router'
+
+// 导入菜单类型
+import type { MenuObj } from '@/components/owlMenuPanel/OwlMenuPanelType'
 
 // 头像组件
 import OwlAvatar from '../components/owlAvatar/OwlAvatar.vue'
@@ -37,6 +40,15 @@ import OwlMenuPanel from '../components/owlMenuPanel/OwlMenuPanel.vue'
 
 // 头像的图片地址
 const avatarUrl = ref('/owl.png')
+
+// 默认菜单数据
+const defaultMenuRouter = '/about'
+// 声明一些菜单元素
+const menuList:Array<MenuObj> = reactive([
+  {id:'a',text:'首页',icon:'Location',routerPath:'/about'},
+  {id:'b',text:'打字练习',icon:'Menu',routerPath:'/typingPractice'},
+])
+
 
 </script>
 
@@ -54,12 +66,14 @@ const avatarUrl = ref('/owl.png')
 
   .menu{
     flex: 1;
-    border: 0px solid red;
+    border: 1px solid red;
     text-align: center;
+    background-color: rgb(22, 21, 21);
+    border-radius: 10px 0px 0px 10px;
   }
   .content{
     flex:9;
-    border: 0px solid red;
+    border: 1px solid red;
     border-radius: 0px 10px 10px 0px;
     background-color: rgb(0, 0, 0);
   }

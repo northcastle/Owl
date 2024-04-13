@@ -1,25 +1,17 @@
 
 <!-- 
-    展示键盘的组件
+    打字练习的主页面
  -->
 <template>
     <div class="key-board-view">
         <el-row>
+            <!-- 顶部的事件和准确率 -->
+            <el-col :span="12"><div style="height: 70px;">Time</div> </el-col>
+            <el-col :span="12"><div style="height: 70px;">准确率</div></el-col>
             <!-- 左侧的案例内容 -->
             <el-col :span="12">
                 <div class="text-box-left">
-                    <el-card style="width: 100%;height: 100%;" shadow="hover">
-                        <template #header>
-                            <div class="content-header">
-                                <span>Card name</span>
-                            </div>
-                        </template>
-
-                        <el-scrollbar height="450px">
-                            <p v-for="o in 400" :key="o" class="text item">{{ 'List item ' + o }}</p>
-                        </el-scrollbar>
-                       
-                    </el-card>
+                  <TypingCasePanel :typing-case-list="typingCaseList" />
                 </div>
             </el-col>
             <!-- 右侧的输入内容 -->
@@ -38,7 +30,12 @@
 
 <script setup lang="ts">
 
-import OwlKeyBoard from '../components/owlkeyboard/OwlKeyBoard.vue'
+import TypingCasePanel from './TypingCasePanel.vue';
+
+import OwlKeyBoard from '../../components/owlkeyboard/OwlKeyBoard.vue'
+
+import {typingCaseList} from './TypingCaseData'
+
 
 </script>
 
@@ -53,16 +50,18 @@ import OwlKeyBoard from '../components/owlkeyboard/OwlKeyBoard.vue'
 }
 
 .text-box-left{
-    border: 1px solid green;
-    background-color: rgb(240, 236, 12);
-    height: 470px;
+    border: 0px solid green;
+    background-color: rgb(216, 216, 197);
+    height: 400px;
     border-radius: 10px 10px 10px 10px;
     padding: 10px;
 }
 
+
+
 .text-box-right{
     border: 1px solid green;
-    height: 470px;
+    height: 400px;
     border-radius: 10px 10px 10px 10px;
     padding: 10px;
 }
@@ -77,3 +76,4 @@ import OwlKeyBoard from '../components/owlkeyboard/OwlKeyBoard.vue'
 }
 
 </style>
+./TypingCaseData

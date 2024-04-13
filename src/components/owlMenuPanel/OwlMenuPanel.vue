@@ -17,21 +17,22 @@
 
 <script setup lang="ts">
 
-import {reactive,ref} from 'vue'
+import {ref} from 'vue'
+
+import { useRoute } from 'vue-router';
 
 // 导入菜单对象的类型
-import type { MenuObj } from './OwlMenuPanelType';
+import type {MenuObjProps } from './OwlMenuPanelType';
 
 // 声明默认的导航页面
 const defaultMenu = ref('/about')
 
-// 声明一些菜单元素
-const menuList:Array<MenuObj> = reactive([
-  {id:'a',text:'首页',icon:'Location',routerPath:'/about'},
-  {id:'b',text:'打字练习',icon:'Menu',routerPath:'/owlkeyboard'},
-//   {id:'b',text:'About页面',icon:'WarningFilled',routerPath:'/about'},
-])
+// 声明菜单的元素列表 : 支持从父组件传过来
+const menu = defineProps<MenuObjProps>()
 
+// 根据当前的路由地址来确定真实的导航页面
+const currentRoute = useRoute()
+defaultMenu.value = currentRoute.path
 
 </script>
 

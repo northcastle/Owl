@@ -12,7 +12,7 @@ const router = createRouter({
         {
           path:'',
           name:'homi',
-          redirect:'/owlkeyboard'
+          redirect:'/typingPractice'
         },
         {
           path: '/about',
@@ -24,9 +24,9 @@ const router = createRouter({
         },
 
         {
-          path:'/owlkeyboard',
-          name:'owlkeyboardview',
-          component: () => import('../views/OwlKeyBoardView.vue')
+          path:'/typingPractice',
+          name:'typingPracticeView',
+          component: () => import('../views/typePractice/TypingPractice.vue')
         }
       ]
     },

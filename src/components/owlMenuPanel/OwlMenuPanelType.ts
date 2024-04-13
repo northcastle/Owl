@@ -8,3 +8,11 @@ export interface MenuObj{
     icon?:string, // 菜单图标
     routerPath?:string, // 菜单路由
 }
+
+/**
+ * 菜单列表属性
+ */
+export interface MenuObjProps{
+    menuList:Array<MenuObj>, // 菜单列表
+    defaultMenu:string, // 默认的导航页
+}
