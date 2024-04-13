@@ -22,6 +22,8 @@
     import type {Ref} from 'vue';
 
     import type {KeyItem,KeyItemProps} from './OwlKeyBoardType'
+import { useEventBus } from '@vueuse/core';
+import { tr } from 'element-plus/es/locale/index.mjs';
 
     
    const props =  defineProps<KeyItemProps>()
@@ -56,12 +58,32 @@
         {keyCode:187,keyValue :'= +'},
         {keyCode:8,keyValue :'del'},
         
-
-        {keyCode:65,keyValue :'A'},{keyCode:66,keyValue :'B'},{keyCode:67,keyValue :'C'},{keyCode:68,keyValue :'D'},{keyCode:69,keyValue :'E'},
-        {keyCode:70,keyValue :'F'},{keyCode:71,keyValue :'G'},{keyCode:72,keyValue :'H'},{keyCode:73,keyValue :'I'},{keyCode:74,keyValue :'J'},
-        {keyCode:75,keyValue :'K'},{keyCode:76,keyValue :'L'},{keyCode:77,keyValue :'M'},{keyCode:78,keyValue :'N'},{keyCode:79,keyValue :'O'},
-        {keyCode:80,keyValue :'P'},{keyCode:81,keyValue :'Q'},{keyCode:82,keyValue :'R'},{keyCode:83,keyValue :'S'},{keyCode:84,keyValue :'T'},
-        {keyCode:85,keyValue :'U'},{keyCode:86,keyValue :'V'},{keyCode:87,keyValue :'W'},{keyCode:88,keyValue :'X'},{keyCode:89,keyValue :'Y'},
+        // 英文字符
+        {keyCode:65,keyValue :'A'},
+        {keyCode:66,keyValue :'B'},
+        {keyCode:67,keyValue :'C'},
+        {keyCode:68,keyValue :'D'},
+        {keyCode:69,keyValue :'E'},
+        {keyCode:70,keyValue :'F'},
+        {keyCode:71,keyValue :'G'},
+        {keyCode:72,keyValue :'H'},
+        {keyCode:73,keyValue :'I'},
+        {keyCode:74,keyValue :'J'},
+        {keyCode:75,keyValue :'K'},
+        {keyCode:76,keyValue :'L'},
+        {keyCode:77,keyValue :'M'},
+        {keyCode:78,keyValue :'N'},
+        {keyCode:79,keyValue :'O'},
+        {keyCode:80,keyValue :'P'},
+        {keyCode:81,keyValue :'Q'},
+        {keyCode:82,keyValue :'R'},
+        {keyCode:83,keyValue :'S'},
+        {keyCode:84,keyValue :'T'},
+        {keyCode:85,keyValue :'U'},
+        {keyCode:86,keyValue :'V'},
+        {keyCode:87,keyValue :'W'},
+        {keyCode:88,keyValue :'X'},
+        {keyCode:89,keyValue :'Y'},
         {keyCode:90,keyValue :'Z'},
 
         {keyCode:27,keyValue :'Esc'},
@@ -115,8 +137,6 @@
      */
    const handleKeyDown = (event:any)=>{
 
-    // console.log(event.keyCode,props.keyValue)
-
     // 判断是否是 Caps 按键，如果是，则点亮小按钮
     if(event.keyCode == 20){
         capsShowFlag.value = !capsShowFlag.value;
@@ -125,12 +145,21 @@
     // 判断键盘的值，对应的点亮某个按键
     for(let i = 0;i < keyItemList.length;i++){
         let item = keyItemList[i];
-        if(item.keyCode == event.keyCode && item.keyValue == props.keyValue){
+        if((item.keyCode == event.keyCode && item.keyValue == props.keyValue) || 
+            // 特殊处理一下 ： 中文输入法下的按键的监听
+            (event.keyCode == 229 && (event.key+'').toUpperCase() == props.keyValue) || 
+            (event.keyCode == 229 && (event.key+'') == ' ' && event.code == props.eventKey) ||
+            (event.keyCode == 229 && (event.key+'') == 'Enter' && event.code == props.eventKey) ||
+            (event.keyCode == 229 && (event.key+'') == 'Backspace' && event.code == props.eventKey)){
             keyItemPressFlag.value = true
             break;
         }
     }
 
+    // 最长亮1s，防止中断 keyUp 事件监听导致按键一直亮
+    setTimeout(() => {
+        keyItemPressFlag.value = false;
+    }, 1000);
     
 
    }
@@ -140,7 +169,7 @@
     * @param event 
     */
    const handleKeyUp = (event:any) => {
-    keyItemPressFlag.value = false
+        keyItemPressFlag.value = false
    }
 
 

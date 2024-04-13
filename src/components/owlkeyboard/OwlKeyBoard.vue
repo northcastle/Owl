@@ -34,7 +34,7 @@
         <OwlKeyBoardItem  key-value="0 )"/>
         <OwlKeyBoardItem  key-value="- _"/>
         <OwlKeyBoardItem  key-value="= +"/>
-        <OwlKeyBoardItem  key-value="del" :width-value="75"/>
+        <OwlKeyBoardItem  key-value="del" :width-value="75" event-key="Backspace"/>
         <br>
         <!-- 第一行 -->
         <OwlKeyBoardItem  key-value="Tab" :width-value="75"/>
@@ -66,7 +66,7 @@
         <OwlKeyBoardItem  key-value="L"/>
         <OwlKeyBoardItem  key-value="; :"/>
         <OwlKeyBoardItem  key-value="’ ”"/>
-        <OwlKeyBoardItem  key-value="Enter" :width-value="73"/>
+        <OwlKeyBoardItem  key-value="Enter" :width-value="73" event-key="Enter"/>
         <br>
         
         <!-- 第三行 -->
@@ -90,7 +90,7 @@
         <OwlKeyBoardItem  key-value="Ctrl"/>
         <OwlKeyBoardItem  key-value="Alt"/>
         <OwlKeyBoardItem  key-value="Win"/>
-        <OwlKeyBoardItem  key-value="Space" :width-value="260"/>
+        <OwlKeyBoardItem  key-value="Space" :width-value="260" event-key="Space"/>
         <OwlKeyBoardItem  key-value="Com"/>
         <OwlKeyBoardItem  key-value="Opt" />
         <OwlKeyBoardItem  key-value="←" :width-value="43"/>
