@@ -66,16 +66,18 @@ const menuList:Array<MenuObj> = reactive([
 
   .menu{
     flex: 1;
-    border: 1px solid red;
+    border: 0px solid red;
     text-align: center;
     background-color: rgb(22, 21, 21);
     border-radius: 10px 0px 0px 10px;
   }
   .content{
     flex:9;
-    border: 1px solid red;
+    border: 0px solid red;
     border-radius: 0px 10px 10px 0px;
     background-color: rgb(0, 0, 0);
+    padding-left: 10px;
+    padding-right: 10px;
   }
 
   .avatar-box{
