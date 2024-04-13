@@ -120,7 +120,7 @@ import OwlKeyBoardItem from './OwlKeyBoardItem.vue';
         min-width: 750px;
         min-height: 310px;
         padding: 0px;
-        background-color: white;
+        background-color: rgb(255, 255, 255);
         border-radius: 10px;
     }
 
