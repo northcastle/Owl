@@ -23,8 +23,8 @@ app.use(router)
 app.use(ElementPlus)
 
 // 全局注册全部的elementplus icon
-for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
-    app.component(key, component)
+for (const [keyicon, component] of Object.entries(ElementPlusIconsVue)) {
+  app.component(keyicon, component)
   }
 
 app.mount('#appOwl')

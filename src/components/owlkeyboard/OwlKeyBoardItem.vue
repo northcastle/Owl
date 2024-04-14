@@ -8,7 +8,7 @@
         :class="{keyItemPress:keyItemPressFlag}">
 
         <div class="capsdot" v-if="capsShowFlag && capsFlag"></div>
-        {{ keyValue }}
+        {{ keyText }}
 
         <div class="fjitem" v-if="fjFlag"></div>
        
@@ -21,9 +21,7 @@
     import { ref,onMounted,onBeforeUnmount } from 'vue';
     import type {Ref} from 'vue';
 
-    import type {KeyItem,KeyItemProps} from './OwlKeyBoardType'
-import { useEventBus } from '@vueuse/core';
-import { tr } from 'element-plus/es/locale/index.mjs';
+    import type {KeyItemProps} from './OwlKeyBoardType'
 
     
    const props =  defineProps<KeyItemProps>()
@@ -34,102 +32,9 @@ import { tr } from 'element-plus/es/locale/index.mjs';
   // 大写的标识
   const capsShowFlag:Ref<boolean> = ref(false)
 
-    // 键盘按键的基本数据对象
-    // interface KeyItem{
-    //     keyCode:number,
-    //     keyValue:string | number
-    // }
+  // 标识 command 按下
+  const commandPressFlag:Ref<boolean> = ref(false)
 
-    let keyItemList:KeyItem[] = [
-
-        
-        {keyCode:192,keyValue :'`~'},
-        {keyCode:49,keyValue :'1 !'},
-        {keyCode:50,keyValue :'2 @'},
-        {keyCode:51,keyValue :'3 #'},
-        {keyCode:52,keyValue :'4 $'},
-        {keyCode:53,keyValue :'5 %'},
-        {keyCode:54,keyValue :'6 ^'},
-        {keyCode:55,keyValue :'7 &'},
-        {keyCode:56,keyValue :'8 *'},
-        {keyCode:57,keyValue :'9 ('},
-        {keyCode:48,keyValue :'0 )'},
-        {keyCode:189,keyValue :'- _'},
-        {keyCode:187,keyValue :'= +'},
-        {keyCode:8,keyValue :'del'},
-        
-        // 英文字符
-        {keyCode:65,keyValue :'A'},
-        {keyCode:66,keyValue :'B'},
-        {keyCode:67,keyValue :'C'},
-        {keyCode:68,keyValue :'D'},
-        {keyCode:69,keyValue :'E'},
-        {keyCode:70,keyValue :'F'},
-        {keyCode:71,keyValue :'G'},
-        {keyCode:72,keyValue :'H'},
-        {keyCode:73,keyValue :'I'},
-        {keyCode:74,keyValue :'J'},
-        {keyCode:75,keyValue :'K'},
-        {keyCode:76,keyValue :'L'},
-        {keyCode:77,keyValue :'M'},
-        {keyCode:78,keyValue :'N'},
-        {keyCode:79,keyValue :'O'},
-        {keyCode:80,keyValue :'P'},
-        {keyCode:81,keyValue :'Q'},
-        {keyCode:82,keyValue :'R'},
-        {keyCode:83,keyValue :'S'},
-        {keyCode:84,keyValue :'T'},
-        {keyCode:85,keyValue :'U'},
-        {keyCode:86,keyValue :'V'},
-        {keyCode:87,keyValue :'W'},
-        {keyCode:88,keyValue :'X'},
-        {keyCode:89,keyValue :'Y'},
-        {keyCode:90,keyValue :'Z'},
-
-        {keyCode:27,keyValue :'Esc'},
-        {keyCode:112,keyValue :'F1'},
-        {keyCode:113,keyValue :'F2'},
-        {keyCode:114,keyValue :'F3'},
-        {keyCode:115,keyValue :'F4'},
-        {keyCode:116,keyValue :'F5'},
-        {keyCode:117,keyValue :'F6'},
-        {keyCode:118,keyValue :'F7'},
-        {keyCode:119,keyValue :'F8'},
-        {keyCode:120,keyValue :'F9'},
-        {keyCode:121,keyValue :'F10'},
-        {keyCode:122,keyValue :'F11'},
-        {keyCode:123,keyValue :'F12'},
-
-       
-        
-       
-        {keyCode:9,keyValue :'Tab'},
-        {keyCode:13,keyValue :'Enter'},
-        {keyCode:16,keyValue :'Shift'},
-        {keyCode:20,keyValue :'Caps'},
-        {keyCode:17,keyValue :'Ctrl'},
-        {keyCode:1800000,keyValue :'Alt'},
-        {keyCode:1800000,keyValue :'Opt'},
-        {keyCode:9100000,keyValue :'Win'},
-        {keyCode:9100000,keyValue :'Com'},
-        {keyCode:32,keyValue :'Space'},
-
-        {keyCode:219,keyValue :'[ {'},
-        {keyCode:221,keyValue :'] }'},
-        {keyCode:220,keyValue :'\\ |'},
-        {keyCode:186,keyValue :'; :'},
-        {keyCode:222,keyValue :'’ ”'},
-        {keyCode:188,keyValue :', <'},
-        {keyCode:190,keyValue :'. >'},
-        {keyCode:191,keyValue :'/ ?'},
-        
-        
-        {keyCode:37,keyValue :'←'},
-        {keyCode:38,keyValue :'↑'},
-        {keyCode:39,keyValue :'→'},
-        {keyCode:40,keyValue :'↓'},
-    
-    ]
 
     /**
      * 监听 按键按下的事件
@@ -142,24 +47,36 @@ import { tr } from 'element-plus/es/locale/index.mjs';
         capsShowFlag.value = !capsShowFlag.value;
     }
 
-    // 判断键盘的值，对应的点亮某个按键
-    for(let i = 0;i < keyItemList.length;i++){
-        let item = keyItemList[i];
-        if((item.keyCode == event.keyCode && item.keyValue == props.keyValue) || 
-            // 特殊处理一下 ： 中文输入法下的按键的监听
-            (event.keyCode == 229 && (event.key+'').toUpperCase() == props.keyValue) || 
-            (event.keyCode == 229 && (event.key+'') == ' ' && event.code == props.eventKey) ||
-            (event.keyCode == 229 && (event.key+'') == 'Enter' && event.code == props.eventKey) ||
-            (event.keyCode == 229 && (event.key+'') == 'Backspace' && event.code == props.eventKey)){
-            keyItemPressFlag.value = true
-            break;
-        }
+    // 判断是否是 ctrl/Command + s 组合按键
+    // console.log(event.ctrlKey,event.metaKey)
+    if ((event.ctrlKey || event.metaKey) && (event.code+'').startsWith('Key')) {
+        // 阻止默认行为（保存网页）
+        event.preventDefault();
     }
 
+    if(event.metaKey){
+        commandPressFlag.value = true;
+    }
+
+
+    // 判断键盘的值，对应的点亮某个按键
+    if((event.keyCode == 16 && event.code == props.code) ||
+        (event.keyCode == 18 && event.code == props.code) ||
+        ((event.keyCode == props.keyCode) && event.keyCode != 16 && event.keyCode != 18) ||
+        (event.keyCode == 229 && event.code == props.code)){
+        keyItemPressFlag.value = true
+        
+    }
+
+
     // 最长亮1s，防止中断 keyUp 事件监听导致按键一直亮
-    setTimeout(() => {
-        keyItemPressFlag.value = false;
-    }, 1000);
+    if(commandPressFlag.value){
+        setTimeout(() => {
+            keyItemPressFlag.value = false
+            commandPressFlag.value = false
+        }, 3000);
+    }
+   
     
 
    }
@@ -169,7 +86,13 @@ import { tr } from 'element-plus/es/locale/index.mjs';
     * @param event 
     */
    const handleKeyUp = (event:any) => {
+
+        if((event.keyCode == 16 && event.code == props.code) ||
+        (event.keyCode == 18 && event.code == props.code) ||
+        ((event.keyCode == props.keyCode) && event.keyCode != 16 && event.keyCode != 18) ||
+        (event.keyCode == 229 && event.code == props.code)){
         keyItemPressFlag.value = false
+    }
    }
 
 
