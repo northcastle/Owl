@@ -6,7 +6,11 @@
     <div class="typing-practice-view">
         <el-row>
             <!-- 顶部的事件和准确率 -->
-            <el-col :span="12"><div style="height: 70px;">Time</div> </el-col>
+            <el-col :span="12">
+                <div style="height: 70px;">
+                    <OwlTimer />
+                </div> 
+            </el-col>
             <el-col :span="12"><div style="height: 70px;">准确率</div></el-col>
             <!-- 左侧的案例内容 -->
             <el-col :span="12">
@@ -37,6 +41,8 @@
 <script setup lang="ts">
 
 import {ref} from 'vue'
+
+import OwlTimer from '../../components/owlTimer/OwlTimer.vue'
 
 import TypingCasePanel from './TypingCasePanel.vue';
 
