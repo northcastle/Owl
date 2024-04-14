@@ -11,14 +11,9 @@
 
 <script setup lang="ts">
 
-    import { ref } from 'vue';
-    import type {Ref} from 'vue';
-
     import type {OwlAvatarProps} from './OwlAvatarType'
 
    const props =  defineProps<OwlAvatarProps>()
-
-
 
 </script>
 

@@ -25,7 +25,7 @@ import { useRoute } from 'vue-router';
 import type {MenuObjProps } from './OwlMenuPanelType';
 
 // 声明默认的导航页面
-const defaultMenu = ref('/about')
+const defaultMenu = ref('')
 
 // 声明菜单的元素列表 : 支持从父组件传过来
 const menu = defineProps<MenuObjProps>()
