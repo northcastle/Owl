@@ -31,12 +31,15 @@
 
 <script setup lang="ts">
 
-import {ref,reactive} from 'vue'
+import {reactive} from 'vue'
 
 import type {TypingCaseObj,TypingCaseProps} from './TypingCasePanelType'
 
 // 传入进来的数据
 const typingCaseProps = defineProps<TypingCaseProps>()
+
+// 定义回传给父组件的选中的数据
+const typingCaseEvent =  defineEmits(['chooseTypingCase'])
 
 // 当前正在使用的数据
 let typingCaseObjUsing:TypingCaseObj = reactive({id:'',title:'',content:''})
@@ -51,6 +54,8 @@ const chooseTypingCaseListItem = (chooseObj:TypingCaseObj)=>{
     typingCaseObjUsing.id = chooseObj.id;
     typingCaseObjUsing.title = chooseObj.title;
     typingCaseObjUsing.content = chooseObj.content;
+
+    typingCaseEvent('chooseTypingCase',chooseObj.content)
 
 }
 </script>

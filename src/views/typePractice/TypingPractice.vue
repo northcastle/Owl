@@ -8,34 +8,57 @@
             <!-- 顶部的事件和准确率 -->
             <el-col :span="12">
                 <div style="height: 70px;margin-right: 5px;">
-                    <OwlTimer />
+                    <OwlTimer @start-typing="receiveStartTyping" @pause-typing="receivePauseTyping"
+                        @stop-typing="receiveStopTyping" @restart-typing="receiveReatartTyping"/>
                 </div> 
             </el-col>
             <el-col :span="12">
                 <div style="height: 70px;margin-left: 5px;">
                     <div class="accuracy-container">
-                        <el-icon size="1.5rem" color="black" style="position: absolute;margin-top: 4px;"><Medal /></el-icon>
-                        <span class="accuracy-text">
-                            Accuracy (准确率)：{{ accuracyValue }}
-                        </span>
+                        
+                        <el-row>
+                            <el-col :span="16">
+                                <el-icon size="1.5rem" color="black" style="position: absolute;margin-top: 4px;"><Medal /></el-icon>
+                                <span class="accuracy-text">
+                                    Accuracy (准确率)：{{ accuracyValue }}
+                                </span>
+                            </el-col>
+
+                            <el-col :span="8" style="margin-top:-8px">
+                                <span class="static-text">总计字数 ： {{ caseTextNum }}</span>
+                                <span class="static-text">匹配字数 ： {{ matchTextNum }}</span>
+                            </el-col>
+
+                        </el-row>
+                       
+                        <br>
+                        
+
                     </div>
                 </div>
             </el-col>
             <!-- 左侧的案例内容 -->
             <el-col :span="12">
                 <div class="text-box-left">
-                  <TypingCasePanel :typing-case-list="typingCaseList" />
+                  <TypingCasePanel :typing-case-list="typingCaseList" @choose-typing-case="receiveChooseTypingCase"/>
                 </div>
             </el-col>
             <!-- 右侧的输入内容 -->
             <el-col :span="12" >
-                <div class="text-box-right">
+                <div class="text-box-right" >
                     <el-card class="el-card-my" shadow="hover">
+                        <!-- 展示输入框 -->
                         <el-input v-model="typingText" maxlength="300" placeholder="请输入左侧的文本" 
-                         show-word-limit type="textarea" rows="16" resize="none" class="el-input-my"/>
+                         show-word-limit type="textarea" rows="16" resize="none" class="el-input-my"
+                         :disabled="writeDisableFlag" v-if="!showResultFlag"/>
+
+                         <!-- 展示最后的结果 -->
+                         <template v-if="showResultFlag">
+                            <div v-html="typingTextRes"></div>
+                         </template>
                     </el-card>
-                   
                 </div>
+                
             </el-col>
             <!-- 下面的键盘 -->
             <el-col :span="24">
@@ -59,11 +82,115 @@ import OwlKeyBoard from '../../components/owlkeyboard/OwlKeyBoard.vue'
 
 import {typingCaseList} from './TypingCaseData'
 
+
+// 默认选中的文本
+const choosedCaseContent = ref('')
+choosedCaseContent.value = typingCaseList[0].content.trim()
+
+// 输入文本框的禁用标识
+const writeDisableFlag = ref(true)
+
+// 展示输入结果的标识
+const showResultFlag = ref(false)
+
 // 输入的文本
 const typingText = ref('')
+// 判定之后的文本
+const typingTextRes = ref('')
+
+
+// 案例字数
+const caseTextNum = ref(0)
+// 正确字数
+const matchTextNum = ref(0)
 
 // 准确率
 const accuracyValue = ref('--%')
+
+
+// 接收到了开始输入的事件
+const receiveStartTyping = ()=>{
+    // 取消文本框的禁用
+    writeDisableFlag.value = false;
+    // 取消结果展示
+    showResultFlag.value = false;
+}
+
+// 接收到了暂停输入的事件
+const receivePauseTyping = ()=>{
+    // 设置文本框的禁用
+    writeDisableFlag.value = true;
+    // 取消结果展示
+    showResultFlag.value = false;
+}
+
+// 接收到了 停止输入的事件
+const receiveStopTyping = ()=>{
+
+    // 设置文本框的禁用
+    writeDisableFlag.value = true;
+
+    // 获取到左侧的原来的文本
+    // console.log('case : ',choosedCaseContent.value)
+    // 获取到右侧的输入的文本
+    // console.log('inpu : ',typingText.value)
+
+    let caseLength = choosedCaseContent.value.length
+    let typingLength = typingText.value.length
+
+    // 记录案例的文本字数
+    caseTextNum.value = caseLength;
+
+    // 没有输入的时候，直接返回 0
+    if(typingLength == 0){
+        accuracyValue.value = '0%'
+        return
+    }
+
+    // 找到两个字符串中较短的那一个
+    let minLength = caseLength > typingLength ? typingLength : caseLength;
+    // 开始循环判断字符串的值是否相等
+    let matchNum = 0;
+    for(let i = 0 ;i < minLength; i++){
+        if(choosedCaseContent.value.charAt(i) == typingText.value.charAt(i)){
+            matchNum++;
+            typingTextRes.value += '<span>'+choosedCaseContent.value.charAt(i)+'</span>';
+        }else{
+            typingTextRes.value +=  '<span style="color:red;font-weight:bold">'+typingText.value.charAt(i)+'</span>';
+        }
+    }
+
+    // 记录匹配成功的字数
+    matchTextNum.value = matchNum;
+
+    // 计算准确率
+    let resAccuracy = parseFloat(((matchNum / caseLength) * 100).toFixed(2))
+    accuracyValue.value = resAccuracy+'%';
+
+    // 展示结果
+    showResultFlag.value = true;
+
+
+}
+
+// 接收到了 重新开始的事件
+const receiveReatartTyping = ()=>{
+    // 取消文本框的禁用
+    writeDisableFlag.value = false;
+    // 重置文本输入框
+    typingText.value = '';
+
+    // 重置统计数字
+    caseTextNum.value = 0
+    matchTextNum.value = 0
+
+    accuracyValue.value = '--%'
+}
+
+// 接收到 选中了案例文本
+const receiveChooseTypingCase = (chooseContent:string)=>{
+    choosedCaseContent.value = chooseContent.trim()
+}
 
 </script>
 
@@ -96,6 +223,21 @@ const accuracyValue = ref('--%')
     margin-right: 20px;
     margin-left: 30px
 }
+
+.static-text{
+    display: inline-block;
+    width: 100%;
+    text-align: center;
+    border: 0px solid red;
+    background-color: #ffffff59;
+    border-radius: 5px;
+    color: rgb(0, 0, 0);
+    font-size: 0.8rem;
+    padding:3px;
+    font-weight: bold;
+    margin-top: -10px;
+}
+
 
 .text-box-left{
     border: 0px solid green;

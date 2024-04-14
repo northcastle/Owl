@@ -27,7 +27,7 @@
 
 
     // 用时
-    const timeUseNum = ref(36000)
+    const timeUseNum = ref(0)
 
     // 是否开始的标识位
     const isActiveFlag:Ref<boolean> = ref(false)
@@ -38,6 +38,8 @@
     // 是否停止的标识位
     const isStopFlag:Ref<boolean> = ref(false)
 
+    // 发送的事件
+    const eventList = defineEmits(['startTyping','pauseTyping','stopTyping','restartTyping'])
     
 
     // 创建一个定时器
@@ -60,6 +62,9 @@
         resume()
         isPauseFlag.value = false;
         isStopFlag.value = false;
+
+        // 发送开始事件
+        eventList('startTyping')
         
     }
     // 暂停
@@ -67,6 +72,9 @@
         pause()
         isPauseFlag.value = true;
         isStopFlag.value = false;
+
+        // 发送暂停事件
+        eventList('pauseTyping')
     }
 
     //直接停止
@@ -74,6 +82,9 @@
         pause();
         isPauseFlag.value = false;
         isStopFlag.value = true;
+
+        // 发送事件给父组件 : 停止键入
+        eventList('stopTyping')
       
     }
 
@@ -84,6 +95,8 @@
         isStopFlag.value = false
         startTimer()
 
+        // 发送事件给父组件 ： 重新开始
+        eventList('restartTyping')
  
     }
 
