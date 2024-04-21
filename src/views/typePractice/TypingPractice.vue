@@ -135,6 +135,7 @@ const receiveStopTyping = ()=>{
     // 获取到右侧的输入的文本
     // console.log('inpu : ',typingText.value)
 
+    typingText.value = typingText.value.trim()
     let caseLength = choosedCaseContent.value.length
     let typingLength = typingText.value.length
 
@@ -151,6 +152,7 @@ const receiveStopTyping = ()=>{
     let minLength = caseLength > typingLength ? typingLength : caseLength;
     // 开始循环判断字符串的值是否相等
     let matchNum = 0;
+    typingTextRes.value = ''
     for(let i = 0 ;i < minLength; i++){
         if(choosedCaseContent.value.charAt(i) == typingText.value.charAt(i)){
             matchNum++;
