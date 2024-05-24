@@ -1,3 +1,8 @@
+/**
+ * 这个是项目自带的，
+ * 暂时留着它吧
+ */
+
 import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
 

@@ -6,7 +6,7 @@
             <el-icon :size="20" style="position:absolute;margin-top: 3px;"><Reading /></el-icon>
             <!-- <span class="header-text">{{ typingCaseObjUsing.title }}</span> -->
 
-            <el-dropdown @command="chooseTypingCaseListItem">
+            <el-dropdown @command="chooseTypingCaseListItem" :disabled="typingPracticeData.$state.disableArticalSelectionFlag">
                 <span class="header-text" >
                     {{ typingCaseObjUsing.title }}
                     <el-icon class="title-right-arrow"><arrow-down /></el-icon>
@@ -31,7 +31,7 @@
 
 <script setup lang="ts">
 
-import {reactive} from 'vue'
+import {reactive,ref} from 'vue'
 
 import type {TypingCaseObj,TypingCaseProps} from './TypingCasePanelType'
 
@@ -58,6 +58,11 @@ const chooseTypingCaseListItem = (chooseObj:TypingCaseObj)=>{
     typingCaseEvent('chooseTypingCase',chooseObj.content)
 
 }
+
+// 全局状态变量，控制是否可以切换文本内容
+import {typingPracticeStore} from '../../stores/TypingPractice'
+const typingPracticeData = typingPracticeStore()
+
 </script>
 
 <style scoped>

@@ -82,6 +82,10 @@ import OwlKeyBoard from '../../components/owlkeyboard/OwlKeyBoard.vue'
 
 import {typingCaseList} from './TypingCaseData'
 
+// 全局状态变量，控制是否可以切换文本内容
+import {typingPracticeStore} from '../../stores/TypingPractice'
+const typingPracticeData = typingPracticeStore()
+
 
 // 默认选中的文本
 const choosedCaseContent = ref('')
@@ -114,6 +118,8 @@ const receiveStartTyping = ()=>{
     writeDisableFlag.value = false;
     // 取消结果展示
     showResultFlag.value = false;
+    // 禁用切换文本
+    typingPracticeData.changeDisableArticalSelectionFlag(true)
 }
 
 // 接收到了暂停输入的事件
@@ -126,10 +132,16 @@ const receivePauseTyping = ()=>{
 
 // 接收到了 停止输入的事件
 const receiveStopTyping = ()=>{
+   
 
     // 设置文本框的禁用
     writeDisableFlag.value = true;
 
+    // 开启切换文本
+    typingPracticeData.changeDisableArticalSelectionFlag(false)
+
+
+   
     // 获取到左侧的原来的文本
     // console.log('case : ',choosedCaseContent.value)
     // 获取到右侧的输入的文本
@@ -172,6 +184,8 @@ const receiveStopTyping = ()=>{
     // 展示结果
     showResultFlag.value = true;
 
+   
+
 
 }
 
@@ -181,6 +195,9 @@ const receiveReatartTyping = ()=>{
     writeDisableFlag.value = false;
     // 重置文本输入框
     typingText.value = '';
+
+    // 禁用切换文本
+    typingPracticeData.changeDisableArticalSelectionFlag(true)
 
     // 重置统计数字
     caseTextNum.value = 0
