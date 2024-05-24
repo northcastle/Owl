@@ -10,7 +10,7 @@ import path from 'path'
 const createWindow = () => {
   const win = new BrowserWindow({
     width: 1200,
-    height: 800,
+    height: 829,
   })
 
   // 根据是否存在开发路径，决定加载不同的内容

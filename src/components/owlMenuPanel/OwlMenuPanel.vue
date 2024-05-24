@@ -2,7 +2,7 @@
 <!-- 菜单栏组件  -->
 <template>
     <el-scrollbar max-height="500px" >
-      <el-menu   background-color="rgba(0,0,0,0)" text-color="#fff" :default-active="defaultMenu" :router="true" >
+      <el-menu   background-color="rgba(0,0,0,0)" text-color="#fff" :default-active="defaultMenu" :router="true"  >
           <template v-for="menuItem in menuList">
               <el-menu-item :index="menuItem.routerPath">
                 <el-icon><component :is="menuItem.icon"></component></el-icon>
@@ -41,6 +41,7 @@ defaultMenu.value = currentRoute.path
 /* 重写滚动条原来的颜色 */
 .el-scrollbar {
     --el-scrollbar-bg-color: #959791;
+    height: calc(100% - 120px)
 }
 
 /* 重写菜单原来的右侧边框 */

@@ -49,7 +49,7 @@ const avatarUrl = ref('/owl.png')
   .home-view{
     border: 1px solid rgb(0, 0, 0);
     border-radius: 10px;
-    box-shadow: 0px 0px 10px rgb(187, 184, 184);
+    /* box-shadow: 0px 0px 10px rgb(187, 184, 184); */
     width: 1200px;
     height: 800px;
     display: flex;
@@ -58,7 +58,7 @@ const avatarUrl = ref('/owl.png')
 
   .menu{
     flex: 1;
-    border: px solid red;
+    border: 0px solid red;
     text-align: center;
     background-color: rgb(22, 21, 21);
     border-radius: 10px 0px 0px 10px;
