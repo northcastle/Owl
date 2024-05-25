@@ -14,11 +14,14 @@
 
   import {ref} from 'vue'
 
-  const imgUrl = ref('/owl_welcome_512.png')
+  // const imgUrl = ref('/owl_welcome_512.png')
+  import imgUrl from '/owl_welcome_512.png'
 
-  const projectNameImageUrl = ref('/project_name.png')
+  // const projectNameImageUrl = ref('/project_name.png')
+  import projectNameImageUrl from '/project_name.png'
 
-  const projectCreateImageUrl = ref('/project_create.png')
+  // const projectCreateImageUrl = ref('/project_create.png')
+  import projectCreateImageUrl from '/project_create.png'
 
 </script>
 

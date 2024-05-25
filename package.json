@@ -2,7 +2,9 @@
   "name": "owl",
   "version": "1.0.0",
   "private": true,
-
+  "author": "northcastle",
+  "description": "The application for users to practice typing",
+  "main": "electrontarget/electronMain.js",
   "scripts": {
     "dev": "vite",
     "build": "run-p type-check \"build-only {@}\" --",
@@ -10,19 +12,32 @@
     "build-only": "vite build",
     "type-check": "vue-tsc --build --force",
 
-    "dev:all":"vite"
+    "start": "electron-forge start",
+    "package": "electron-forge package",
+    "make": "electron-forge make",
 
-
+    "dev:all": "vite",
+    "build:all": "run-p type-check \"build-only {@}\" --"
   },
   "dependencies": {
     "@element-plus/icons-vue": "^2.3.1",
     "@vueuse/core": "^10.9.0",
+    "electron-squirrel-startup": "^1.0.1",
     "element-plus": "^2.6.3",
     "pinia": "^2.1.7",
     "vue": "^3.4.21",
     "vue-router": "^4.3.0"
   },
   "devDependencies": {
+    "@electron-forge/cli": "^7.4.0",
+    "@electron-forge/maker-deb": "^7.4.0",
+    "@electron-forge/maker-dmg": "^7.4.0",
+    "@electron-forge/maker-rpm": "^7.4.0",
+    "@electron-forge/maker-squirrel": "^7.4.0",
+    "@electron-forge/maker-zip": "^7.4.0",
+    "@electron-forge/plugin-auto-unpack-natives": "^7.4.0",
+    "@electron-forge/plugin-fuses": "^7.4.0",
+    "@electron/fuses": "^1.8.0",
     "@tsconfig/node20": "^20.1.2",
     "@types/node": "^20.11.28",
     "@vitejs/plugin-vue": "^5.0.4",

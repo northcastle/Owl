@@ -39,7 +39,8 @@ import OwlMenuPanel from '../../components/owlMenuPanel/OwlMenuPanel.vue'
 import {defaultMenuRouter,menuList} from './SysMenu'
 
 // 头像的图片地址
-const avatarUrl = ref('/owl.png')
+// const avatarUrl = ref('/owl.png')
+import avatarUrl from '/owl.png'
 
 
 </script>
