@@ -4,6 +4,11 @@ const { FuseV1Options, FuseVersion } = require('@electron/fuses');
 module.exports = {
   packagerConfig: {
     asar: true,
+    // 指定app的icon：mac & windows
+    // 这个配置的是应用启动后，展示的图标
+    // mac  : xxx.icns ; windows : xxx.ico
+    // 只需要写名称，不需要写后缀
+    icon:'./forgeimages/owl'
   },
   rebuildConfig: {},
   makers: [
@@ -12,12 +17,19 @@ module.exports = {
       name: '@electron-forge/maker-dmg',
       config: {
         //background: './assets/dmg-background.png',
+        // 设置 安装程序的图标
+        // 此处需要写明白图片的后缀名称
+        setupIcon: './forgeimages/owl.icns',
         format: 'ULFO'
       }
     },
     {
       name: '@electron-forge/maker-squirrel',
-      config: {},
+      config: {
+        // 设置 安装程序的图标
+        // 此处需要写明白图片的后缀名称
+        setupIcon: './forgeimages/owl.ico'
+      },
     },
     {
       name: '@electron-forge/maker-zip',
