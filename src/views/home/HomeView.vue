@@ -51,7 +51,7 @@ import avatarUrl from '/owl.png'
     border: 1px solid rgb(0, 0, 0);
     border-radius: 10px;
     /* box-shadow: 0px 0px 10px rgb(187, 184, 184); */
-    width: 1200px;
+    /* width: 1200px; */
     height: 800px;
     display: flex;
 

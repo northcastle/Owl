@@ -6,11 +6,15 @@ import {app,BrowserWindow} from 'electron'
 
 import path from 'path'
 
-// 创建主窗口
-const createWindow = () => {
+/**
+ * 创建主窗口 edited on 2024-05-27
+ * @param widthValue 窗口宽度
+ * @param heightValue 窗口高度
+ */
+const createWindow = (widthValue:number,heightValue:number) => {
   const win = new BrowserWindow({
-    width: 1200,
-    height: 829,
+    width: widthValue,
+    height:heightValue,
   })
 
   // 根据是否存在开发路径，决定加载不同的内容
@@ -27,11 +31,18 @@ const createWindow = () => {
 // 应用准备就绪，加载窗口
 app.whenReady().then(() => {
 
-    createWindow()
+  if (process.platform !== 'darwin'){
+    // 非mac系统
+    createWindow(1200,863)
+  }else{
+    // mac系统
+    createWindow(1200,829)
+  }
+    
 
     // mac 上默认保留一个窗口
     app.on('activate', () => {
-        if (BrowserWindow.getAllWindows().length === 0) createWindow()
+        if (BrowserWindow.getAllWindows().length === 0) createWindow(1200,829)
     })
 
     console.log('--- app ready ---')
