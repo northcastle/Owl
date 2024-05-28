@@ -15,6 +15,7 @@ const createWindow = (widthValue:number,heightValue:number) => {
   const win = new BrowserWindow({
     width: widthValue,
     height:heightValue,
+    resizable:false, // 禁止改变窗口大小
   })
 
   // 根据是否存在开发路径，决定加载不同的内容
