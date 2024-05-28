@@ -7,4 +7,6 @@ export const defaultMenuRouter = '/welcome'
 export const menuList:Array<MenuObj> = [
   {id:'a',text:'首页',icon:'Location',routerPath:'/welcome'},
   {id:'b',text:'打字练习',icon:'Menu',routerPath:'/typingPractice'},
+  {id:'c',text:'协助打包',icon:'Files',routerPath:'/packageHelper'},
+
 ]

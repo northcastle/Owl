@@ -30,6 +30,12 @@ const router = createRouter({
           path:'/typingPractice',
           name:'typingPracticeView',
           component: () => import('../views/typePractice/TypingPractice.vue')
+        },
+
+        {
+          path:'/packageHelper',
+          name:'packageHelperView',
+          component:() => import('../views/packageHelper/PackageHelper.vue')
         }
       ]
     },
