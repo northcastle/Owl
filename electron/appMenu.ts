@@ -15,8 +15,6 @@ let templateMenu:Array<MenuItemConstructorOptions> = [];
  * 创建菜单的方法
  */
 export const createMenu = ()=>{
-
-    console.log('开始创建菜单,app.name : ',app.name)
   
     templateMenu = [
         ...(isMac() ? 
@@ -37,22 +35,20 @@ export const createMenu = ()=>{
             [{
                 label:app.name,
                 submenu:[
-                    
+                    { role: 'quit' }
                 ]
             }]),
-        {
-            label:'File',
-            submenu:[
-                isMac() ? { role: 'close' } : { role: 'quit' }
-            ]
-        }
+        // {
+        //     label:'File',
+        //     submenu:[
+        //         isMac() ? { role: 'close' } : { role: 'quit' }
+        //     ]
+        // }
     ]
 
     // 设置自定义的菜单
     const menuData : Menu = Menu.buildFromTemplate(templateMenu)
     Menu.setApplicationMenu(menuData)
-
-    console.log('结束创建菜单')
   
 }
 
