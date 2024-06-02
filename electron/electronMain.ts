@@ -2,14 +2,17 @@
  * electron 的主进程
  */
 // 导入模块
-import {app,BrowserWindow} from 'electron'
+import {app,BrowserWindow,ipcMain} from 'electron'
+
+// 导入进程处理模块
+import { handlerOpenFileDialog } from './ipcHandler'
 
 // 导入菜单数据
 import { createMenu } from './appMenu'
 import path from 'path'
 
-// 是否为Mac的标识
-import { isMac } from './commonUtils'
+// 是否为Mac的标识,开发环境的URL
+import { isMac,devUrl } from './commonUtils'
 
 /**
  * 创建主窗口 edited on 2024-05-27
@@ -22,16 +25,18 @@ const createWindow = (widthValue:number,heightValue:number) => {
     width: widthValue,
     height:heightValue,
     resizable:false, // 禁止改变窗口大小
+    webPreferences:{ // 预加载脚本
+      preload: path.join(__dirname, 'ipcPreload.js')
+    }
   })
 
   // 创建菜单
   createMenu()
  
-
   // 根据是否存在开发路径，决定加载不同的内容
-  let devUrl = process.argv[2]
-  if(devUrl){
-    win.loadURL(devUrl)
+  // let devUrl = process.argv[2]
+  if(devUrl()){
+    win.loadURL(devUrl())
   }else{
     // 这个 pages/index.html 就是 vue3 打包之后的那个 index.html
     win.loadFile(path.resolve(__dirname,'pages/index.html'))
@@ -45,6 +50,9 @@ app.whenReady().then(() => {
   // 设置当前应用的名称
   app.setName('Owl')
 
+  // 监听打开文件对话框的请求
+  ipcMain.handle('open-file-dialog', handlerOpenFileDialog)
+
   if (!isMac()){
     // 非mac系统
     createWindow(1200,863)
@@ -54,10 +62,11 @@ app.whenReady().then(() => {
   }
     
 
-    // mac 上默认保留一个窗口
-    app.on('activate', () => {
-        if (BrowserWindow.getAllWindows().length === 0) createWindow(1200,829)
-    })
+
+  // mac 上默认保留一个窗口
+  app.on('activate', () => {
+    if (BrowserWindow.getAllWindows().length === 0) createWindow(1200,829)
+  })
 
     console.log('--- app ready ---')
 })

@@ -27,5 +27,15 @@ for (const [keyicon, component] of Object.entries(ElementPlusIconsVue)) {
   app.component(keyicon, component)
   }
 
+/**
+ * 扩展window对象，添加OwlAPI
+ */
+declare global {
+  interface Window {
+      OwlAPI?: any;
+  }
+}
+
+
 app.mount('#appOwl')
 

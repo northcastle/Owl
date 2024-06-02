@@ -5,7 +5,7 @@
 import {app,Menu, MenuItemConstructorOptions} from 'electron'
 
 // 是否为Mac的标识
-import { isMac } from './commonUtils'
+import { isMac,devUrl } from './commonUtils'
 
 // 菜单对象
 let templateMenu:Array<MenuItemConstructorOptions> = [];
@@ -38,6 +38,13 @@ export const createMenu = ()=>{
                     { role: 'quit' }
                 ]
             }]),
+            ...(devUrl() ? 
+                [{
+                    label:'Developer',
+                    submenu:[
+                        {role: 'toggleDevTools'}
+                    ]
+                }]:[])
         // {
         //     label:'File',
         //     submenu:[

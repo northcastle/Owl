@@ -8,3 +8,11 @@
 export const isMac = ():boolean=>{
     return process.platform === 'darwin'
 }
+
+/**
+ * 获取页面的开发地址
+ * @returns 
+ */
+export const devUrl = ():string =>{
+    return process.argv[2]
+}
