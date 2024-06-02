@@ -2,9 +2,13 @@
  * 主进程处理渲染进程的方法
  */
 
-import { IpcMainInvokeEvent,dialog,OpenDialogOptions, BrowserWindow} from "electron";
+import { IpcMainInvokeEvent,dialog,OpenDialogOptions} from "electron";
 
-import type { TreeNode } from '../src/views/packageHelper/PackageHelperType'
+// 引入目录树数据类型
+import type { TreeNode } from '../src/views/packageHelper/PackageHelperType';
+
+// 引入 文件操作的方法
+
 
 
 /**
@@ -25,6 +29,7 @@ export const handlerOpenFileDialog = async (event:IpcMainInvokeEvent) => {
       let targetFolder = filePaths[0];
       // 创建要返回给页面的目录树的数据
       let treeData:TreeNode[] = [];
+
 
       return targetFolder;
     }
