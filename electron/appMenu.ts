@@ -5,7 +5,7 @@
 import {app,Menu, MenuItemConstructorOptions} from 'electron'
 
 // 是否为Mac的标识
-import { isMac } from './common'
+import { isMac } from './commonUtils'
 
 // 菜单对象
 let templateMenu:Array<MenuItemConstructorOptions> = [];

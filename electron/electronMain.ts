@@ -9,7 +9,7 @@ import { createMenu } from './appMenu'
 import path from 'path'
 
 // 是否为Mac的标识
-import { isMac } from './common'
+import { isMac } from './commonUtils'
 
 /**
  * 创建主窗口 edited on 2024-05-27
