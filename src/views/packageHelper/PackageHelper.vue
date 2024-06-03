@@ -7,11 +7,7 @@
     </el-button>
 
     <br>
-    filePathChoosed : {{ filePathChoosed }}
 
-    <br>
-
-    
     <el-row>
       <!-- 展示的组件树 -->
       <el-col :span="12">
@@ -23,9 +19,7 @@
 
 <script setup lang="ts">
 
-  import { ref } from 'vue';
-
-  const filePathChoosed = ref('xxxxx')
+  import { reactive } from 'vue';
 
   // 树形组件的数据类型
   import type { TreeNode } from './PackageHelperType'
@@ -36,45 +30,8 @@
     label: 'label',
   }
   // 树形组件的数据
-  const filesTreeData: TreeNode[] = [
-  {
-    label: 'Users',
-    fullPath:'/Users',
-    children: [
-      {
-        label: 'northcastle',
-        fullPath:'/Users/northcastle',
-        children: [
-          {
-            label: 'personalFiles',
-            fullPath:'/Users/northcastle/personalFiles',
-            children: [
-              {
-                label: '笔记',
-                fullPath:'/Users/northcastle/personalFiles/笔记',
-                children: [
-                  {
-                    label: 'node1.txt',
-                    fullPath:'/Users/northcastle/personalFiles/笔记/node1.txt'
-                  },
-                  {
-                    label: 'node2.txt',
-                    fullPath:'/Users/northcastle/personalFiles/笔记/node2.txt'
-                  },
-                ],
-              },
-              {
-                label: 'test2.txt',
-                fullPath:'/Users/northcastle/personalFiles/test2.txt'
-              },
-            ],
-          },
-        ],
-      },
-    ],
-  }
-  ]
-  /**
+  let filesTreeData: TreeNode[] = reactive([])
+  /**s
    * 树形组件的点击事件
    * @param data 
    */
@@ -86,9 +43,14 @@
    * 发送打开目录的请求
    */
   const showOpenFileDialog =  async () => {
-    const chooseFilePath = await window.OwlAPI.openFileDialog()
-    console.log('chooseFilePath :',chooseFilePath)
-    filePathChoosed.value = chooseFilePath
+    const chooseFilePath:TreeNode[] = await window.OwlAPI.openFileDialog()
+    // console.log('chooseFilePath :',chooseFilePath)
+    if(chooseFilePath){
+      chooseFilePath.forEach(item => {
+       filesTreeData.push(item)
+      })
+    }
+    // console.log('filesTreeData :',filesTreeData)
   }
   
 </script>
