@@ -32,7 +32,6 @@ export const handlerOpenFileDialog = async (event:IpcMainInvokeEvent) => {
       // 创建要返回给页面的目录树的数据
       let treeData:TreeNode[] = [];
       readAllFiles(targetFolder,treeData)
-      console.log('handlerOpenFileDialog : treeData',treeData)
       return treeData;
     }
 };
