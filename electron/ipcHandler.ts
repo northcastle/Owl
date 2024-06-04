@@ -32,10 +32,23 @@ export const handlerOpenFileDialog = async (event:IpcMainInvokeEvent) => {
       // D:\work\09数据处理\呼叫中心-李琳\新建文件夹
       // console.log('选中的目录electron ： ',filePaths[0])
       let targetFolder = filePaths[0];
+
       // 创建要返回给页面的目录树的数据
       let treeData:TreeNode[] = [];
       readAllFiles(targetFolder,treeData)
-      return treeData;
+      // 创建根节点
+      let rootData:TreeNode = {
+        id:uuidv4(),
+        label:path.basename(targetFolder),
+        parentPath:'',
+        fullPath:targetFolder,
+        isDir:true,
+        children:treeData
+      }
+      // 最后返回的结果
+      let targetDataList:TreeNode[] = [];
+      targetDataList.push(rootData);
+      return targetDataList;
     }
 };
 

@@ -19,7 +19,20 @@
           </template>
           <div class="el-tree-box">
             <el-scrollbar max-height="600px">
-              <el-tree  empty-text="暂无数据" :data="filesTreeData" :props="treeProps" @node-click="handleNodeClick" class="tree-class tree-class-1" />
+              <el-tree  empty-text="暂无数据" :data="filesTreeData" :props="treeProps" 
+                    node-key="id" show-checkbox  default-expand-all class="tree-class" >
+                
+                <!-- node : 当前的节点对象；data : 当前节点的数据 -->
+                <template #default="{ node, data }">
+                  <span class="node-data-class">
+                    <el-image v-if="data.isDir":src="folderIcon" style="height: 20px;"/>
+                    <el-image v-else :src="fileIcon" style="height: 14px;"/>
+                    <span>
+                      {{ node.label }}
+                    </span>
+                  </span>
+                </template>
+              </el-tree>
             </el-scrollbar>
           </div>
         </el-card>
@@ -34,7 +47,19 @@
 
           <div class="el-tree-box">
             <el-scrollbar max-height="600px">
-              <el-tree  empty-text="暂未选中数据" :data="filesTreeData" :props="treeProps" @node-click="handleNodeClick" class="tree-class tree-class-2" />
+              <el-tree  empty-text="暂未选中数据" :data="filesTreeData" :props="treeProps" 
+                  node-key="id" show-checkbox  default-expand-all class="tree-class">
+                <!-- node : 当前的节点对象；data : 当前节点的数据 -->
+                <template #default="{ node, data }">
+                    <span class="node-data-class">
+                      <el-image v-if="data.isDir":src="folderGreenIcon" style="height: 20px;"/>
+                      <el-image v-else :src="fileGreenIcon" style="height: 14px;"/>
+                      <span>
+                        {{ node.label }}
+                      </span>
+                    </span>
+                  </template>
+              </el-tree>
             </el-scrollbar>
           </div>
         </el-card>
@@ -48,8 +73,16 @@
 
   import { reactive } from 'vue';
 
+  import folderIcon from '/folder.svg'
+  import fileIcon from '/file.svg'
+
+  import folderGreenIcon from '/foldergreen.svg'
+  import fileGreenIcon from '/filegreen.svg'
+
   // 树形组件的数据类型
   import type { TreeNode } from './PackageHelperType'
+
+
 
   // 树形组件的配置
   const treeProps = {
@@ -58,13 +91,9 @@
   }
   // 树形组件的数据
   let filesTreeData: TreeNode[] = reactive([])
-  /**s
-   * 树形组件的点击事件
-   * @param data 
-   */
-   const handleNodeClick = (data: TreeNode) => {
-    console.log('点击了某个文件 ： ',data)
-  }
+
+  // 选中的节点数据
+  let filesTreeDataChoosed: TreeNode[] = reactive([])
 
   /**
    * 发送打开目录的请求
@@ -143,31 +172,23 @@
 .tree-class{
   border: 1px solid rgba(138, 137, 137, 0.186);
   background-color: rgba(138, 137, 137, 0.186);
-  color: rgb(11, 10, 10);
+  color: rgb(255, 255, 255);
   font-weight: bold;
   font-size: 14px;
   min-height: 600px;
 }
 
-.tree-class-1{
-  background-image: linear-gradient(to right top, #dfa4e7, #cfa5ea, #bfa6ec, #aea7ec, #9da8eb, #90b0ef, #84b7f1, #7bbef0, #7ccdf2, #88dbf1, #9ae8f0, #b1f4ef);
-
-}
-
-.tree-class-2{
-  background-image: linear-gradient(to left bottom, #dfa4e7, #cfa5ea, #bfa6ec, #aea7ec, #9da8eb, #90b0ef, #84b7f1, #7bbef0, #7ccdf2, #88dbf1, #9ae8f0, #b1f4ef);
-
-}
 
 /* 设置默认的背景 */
-/* :deep(.el-tree-node__content) {
-  background-color: rgba(132, 129, 129, 0.929);
-} */
+:deep(.el-tree-node__content) {
+  border: 0px solid red;
+  /* background-color: rgba(132, 129, 129, 0.929); */
+}
 
 /* 使用 :deep() 自定义鼠标滑过的样式 */
 :deep(.el-tree-node__content:hover) {
   cursor:pointer;
-  background-color: rgb(7, 7, 7);
+  background-color: rgb(98, 97, 97);
 }
 
 /* 自定义 el-tree 选中节点的样式 */
@@ -190,6 +211,16 @@
   background-color: rgba(7, 7, 7, 0.186);
 }
 
+/* 复选框的背景颜色 */
+:deep(.el-checkbox__inner){
+  background-color: rgb(35, 35, 35);
+}
+
+.node-data-class{
+  display: flex; /* 水平居中 */
+  align-items: center; /* 垂直居中 */ 
+  gap: 10px; /* 节点之间的间距 */
+}
 
 
 </style>
