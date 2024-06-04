@@ -11,6 +11,9 @@ import type { TreeNode } from '../src/views/packageHelper/PackageHelperType';
 import fs from "fs";
 import path from "path";
 
+// 引入uuid工具类
+import { v4 as uuidv4 } from 'uuid';
+
 
 /**
  * 打开文件选择框处理逻辑
@@ -53,6 +56,7 @@ const readAllFiles = (dirPath:string,folderDataTree:TreeNode[]) => {
     if(stat.isDirectory()){
       // 文件夹 ： 继续递归读取
       let folderNode:TreeNode = {
+        id:uuidv4(),
         label:fileName,
         parentPath:dirPath,
         fullPath:filePath,
@@ -64,6 +68,7 @@ const readAllFiles = (dirPath:string,folderDataTree:TreeNode[]) => {
     }else{
       // 文件 ： 直接创建节点返回
       let fileNode:TreeNode = {
+        id:uuidv4(),
         label:fileName,
         parentPath:dirPath,
         fullPath:filePath,
