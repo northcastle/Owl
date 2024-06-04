@@ -138,19 +138,22 @@ import type { TreeNodeData } from 'element-plus/es/components/tree-v2/src/types.
         console.log('根目录数据 :',rootData)
         console.log('剩余目录数据 :',choosedFilesList)
 
-        createTreeWhichChoosed(rootData,choosedFilesList,filesTreeDataChoosed)
+        createTreeNew(rootData,choosedFilesList,filesTreeDataChoosed)
         console.log('创建后的树 :',filesTreeDataChoosed)
+
+        // 刷新左侧的待选列表，剔除已经选中的数据
+        refreshTreeNodes(filesTreeData,choosedFilesList)
 
       }
     }
   }
 
   /**
-   * 创建右侧选中的新的树
+   * 根据数组形式的数据，创建树
    * @param rootData 根节点
    * @param choosedList 选中的节点
    */
-  const createTreeWhichChoosed = (rootData:TreeNodeData,choosedList:TreeNodeData[],targetTreeNodeData:TreeNode[])=>{
+  const createTreeNew = (rootData:TreeNodeData,choosedList:TreeNodeData[],targetTreeNodeData:TreeNode[])=>{
       if(rootData){
 
         //console.log(rootData.fullPath + "    --begin--")
@@ -170,7 +173,7 @@ import type { TreeNodeData } from 'element-plus/es/components/tree-v2/src/types.
                 //console.log('folder : ',element)
                 // 过滤掉当前的节点
                 const filterList = choosedList.filter(item => item.id !== element.id)
-                createTreeWhichChoosed(element,filterList,nodeData.children)
+                createTreeNew(element,filterList,nodeData.children)
               }else{ // 是文件的时候,直接放进去
                   //console.log('file : ',element)
                   if(element.parentPath == nodeData.fullPath){
@@ -193,6 +196,16 @@ import type { TreeNodeData } from 'element-plus/es/components/tree-v2/src/types.
 
         //console.log(rootData.fullPath + "    --end--")
       }
+  }
+
+  /**
+   * 刷新
+   * @param treeNodeData 树节点数据
+   * @param choosedNodeData 选中的节点数据
+   */
+  const refreshTreeNodes = (treeNodeData:TreeNode[],choosedList:TreeNodeData[])=>{
+    console.log('重新刷新树的状态 - treeNodeData ： ',treeNodeData)
+    console.log('重新刷新树的状态 - choosedList ： ',choosedList)
   }
   
 </script>
