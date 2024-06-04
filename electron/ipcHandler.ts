@@ -32,19 +32,22 @@ export const handlerOpenFileDialog = async (event:IpcMainInvokeEvent) => {
       // D:\work\09数据处理\呼叫中心-李琳\新建文件夹
       // console.log('选中的目录electron ： ',filePaths[0])
       let targetFolder = filePaths[0];
-
-      // 创建要返回给页面的目录树的数据
-      let treeData:TreeNode[] = [];
-      readAllFiles(targetFolder,treeData)
       // 创建根节点
       let rootData:TreeNode = {
         id:uuidv4(),
         label:path.basename(targetFolder),
+        parentId:'',
         parentPath:'',
         fullPath:targetFolder,
         isDir:true,
-        children:treeData
+        children:[]
       }
+      // 创建要返回给页面的目录树的数据
+      let treeData:TreeNode[] = [];
+      readAllFiles(targetFolder,treeData,rootData.id)
+      // 给根节点添加children数据
+      rootData.children = treeData;
+    
       // 最后返回的结果
       let targetDataList:TreeNode[] = [];
       targetDataList.push(rootData);
@@ -56,8 +59,9 @@ export const handlerOpenFileDialog = async (event:IpcMainInvokeEvent) => {
  * 读取目录下的所有文件
  * @param dirPath 目标目录
  * @param folderDataTree 目录树数据
+ * @param parentId 父节点id
  */
-const readAllFiles = (dirPath:string,folderDataTree:TreeNode[]) => {
+const readAllFiles = (dirPath:string,folderDataTree:TreeNode[],parentId:string) => {
   
   let contentPath:string[] = fs.readdirSync (dirPath,{encoding:'utf-8'})
   // console.log('readAllFiles : contentPath : ',contentPath)
@@ -71,18 +75,20 @@ const readAllFiles = (dirPath:string,folderDataTree:TreeNode[]) => {
       let folderNode:TreeNode = {
         id:uuidv4(),
         label:fileName,
+        parentId:parentId,
         parentPath:dirPath,
         fullPath:filePath,
         isDir:true,
         children:[]
       }
       folderDataTree.push(folderNode)
-      readAllFiles(filePath,folderNode.children)
+      readAllFiles(filePath,folderNode.children,folderNode.id)
     }else{
       // 文件 ： 直接创建节点返回
       let fileNode:TreeNode = {
         id:uuidv4(),
         label:fileName,
+        parentId:parentId,
         parentPath:dirPath,
         fullPath:filePath,
         isDir:false,

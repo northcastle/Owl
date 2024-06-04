@@ -4,7 +4,7 @@
 
     <el-row style="border: 0px solid red;margin-top: 30px;">
       <el-col :span="24">
-        <el-button type="primary" @click="showOpenFileDialog">Open<el-icon><FolderOpened /></el-icon></el-button>
+        <el-button type="primary" @click="showOpenFileDialog">Open &nbsp;<el-icon><FolderOpened /></el-icon></el-button>
       </el-col>
     </el-row>
     
@@ -49,7 +49,7 @@
 
           <div class="el-tree-box">
             <el-scrollbar max-height="600px">
-              <el-tree  empty-text="暂未选中数据" :data="filesTreeDataChoosed" :props="treeProps" 
+              <el-tree ref="filesTreeChoosed" empty-text="暂未选中数据" :data="filesTreeDataChoosed" :props="treeProps" 
                   node-key="id" show-checkbox  default-expand-all class="tree-class">
                 <!-- node : 当前的节点对象；data : 当前节点的数据 -->
                 <template #default="{ node, data }">
@@ -92,6 +92,8 @@ import type { TreeNodeData } from 'element-plus/es/components/tree-v2/src/types.
 
   // 左侧的待选择的树对象
   const filesTree = ref<InstanceType<typeof ElTree>>()
+  // 右侧的已经选中的树对象
+  const filesTreeChoosed = ref<InstanceType<typeof ElTree>>()
 
   // 树形组件的配置
   const treeProps = {
@@ -142,7 +144,7 @@ import type { TreeNodeData } from 'element-plus/es/components/tree-v2/src/types.
         console.log('创建后的树 :',filesTreeDataChoosed)
 
         // 刷新左侧的待选列表，剔除已经选中的数据
-        refreshTreeNodes(filesTreeData,choosedFilesList)
+        refreshTreeNodesDelete(filesTree,choosedFilesList)
 
       }
     }
@@ -160,6 +162,7 @@ import type { TreeNodeData } from 'element-plus/es/components/tree-v2/src/types.
         let nodeData:TreeNode = {
           id: rootData.id, // 主键值
           label: rootData.label, // 节点名称
+          parentId: rootData.id,
           parentPath:rootData.parentPath,// 父节点路径
           fullPath: rootData.fullPath, // 节点路径
           isDir: rootData.isDir, // 是否是文件夹
@@ -181,6 +184,7 @@ import type { TreeNodeData } from 'element-plus/es/components/tree-v2/src/types.
                     nodeData.children.push({
                       id: element.id, // 主键值
                       label: element.label, // 节点名称
+                      parentId:nodeData.id, // 父节点的id
                       parentPath:element.parentPath,// 父节点路径
                       fullPath: element.fullPath, // 节点路径
                       isDir: element.isDir, // 是否是文件夹
@@ -199,13 +203,37 @@ import type { TreeNodeData } from 'element-plus/es/components/tree-v2/src/types.
   }
 
   /**
-   * 刷新
-   * @param treeNodeData 树节点数据
+   * 刷新树的数据 ： 将选中的数据剔除掉
+   * @param tree 树对象
    * @param choosedNodeData 选中的节点数据
    */
-  const refreshTreeNodes = (treeNodeData:TreeNode[],choosedList:TreeNodeData[])=>{
-    console.log('重新刷新树的状态 - treeNodeData ： ',treeNodeData)
-    console.log('重新刷新树的状态 - choosedList ： ',choosedList)
+  const refreshTreeNodesDelete = (tree:any,choosedList:TreeNodeData[])=>{
+    // 目录节点
+    let dirNodeList:TreeNodeData[] = choosedList.filter(item => item.isDir)
+    // 文件节点
+    let fileNodeList:TreeNodeData[] = choosedList.filter(item => !item.isDir)
+    
+    // 遍历所有的选中的文件节点，将匹配的节点剔除
+    fileNodeList.forEach(element => {
+      tree.value?.remove(element)
+    });
+    // 遍历所有的选中的目录节点，将匹配的节点剔除
+    dirNodeList.forEach(element => {
+      tree.value?.remove(element)
+    });
+
+    // 如果树中只有最顶层的节点了，则剔除掉
+    if (tree.value.data.length === 1 && tree.value.data[0].parentId === '') {
+      tree.value?.remove(tree.value.data[0])
+    }
+  }
+
+  /**
+   * @param tree 树
+   * @param choosedList 选中的节点数据
+   */
+  const refreshTreeNodesAdd = (tree:any,choosedList:TreeNodeData[])=>{
+
   }
   
 </script>
