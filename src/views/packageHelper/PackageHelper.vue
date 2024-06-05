@@ -16,7 +16,7 @@
         <el-card class="card-container card-container-1">
           <template #header>
             <span class="card-header-left">待选择的文件树</span>
-            <el-button type="primary" size="small" :icon="DArrowRight"   style="margin-left: 55%;" @click="confirmChooseFiles"/>
+            <el-button type="primary" size="small" :icon="DArrowRight"   style="margin-left: 55%;" @click="changeTreeLeft"/>
           </template>
           <div class="el-tree-box">
             <el-scrollbar max-height="600px">
@@ -124,14 +124,23 @@ import type { TreeNodeData } from 'element-plus/es/components/tree-v2/src/types.
   }
 
   /**
-   * 确定选中的文件
+   * 左侧的树的数据修改
    */
-  const confirmChooseFiles = () => {
+  const changeTreeLeft = () =>{
+    confirmChooseFiles(filesTree,filesTreeChoosed)
+  }
+
+  /**
+   * 确定选中的文件 
+   * @param treeFrom : 选中节点的树
+   * @param treeTo : 节点要转移过去的树
+   */
+  const confirmChooseFiles = (treeFrom:any,treeTo:any) => {
     if(filesTreeData.length > 0){
       // 先清空一下原来的数据
       filesTreeDataChoosed.splice(0,filesTreeDataChoosed.length)
       // 获取选中的文件数组
-      let choosedFilesList:TreeNodeData[] = filesTree.value!.getCheckedNodes(false, true)
+      let choosedFilesList:TreeNodeData[] = treeFrom.value!.getCheckedNodes(false, true)
       console.log('选中的文件列表 :',choosedFilesList)
       // 遍历选中的文件列表
       if(choosedFilesList && choosedFilesList.length > 0){
@@ -144,14 +153,14 @@ import type { TreeNodeData } from 'element-plus/es/components/tree-v2/src/types.
         console.log('创建后的树 :',filesTreeDataChoosed)
 
         // 刷新左侧的待选列表，剔除已经选中的数据
-        refreshTreeNodesDelete(filesTree,choosedFilesList)
+        refreshTreeNodesDelete(treeFrom,choosedFilesList)
 
       }
     }
   }
 
   /**
-   * 根据数组形式的数据，创建树
+   * 根据数组形式的数据，创建树 - 这个方法就用不到了
    * @param rootData 根节点
    * @param choosedList 选中的节点
    */
@@ -223,7 +232,8 @@ import type { TreeNodeData } from 'element-plus/es/components/tree-v2/src/types.
     });
 
     // 如果树中只有最顶层的节点了，则剔除掉
-    if (tree.value.data.length === 1 && tree.value.data[0].parentId === '') {
+    // console.log('节点删除后的剩余的数据 ： ',tree.value)
+    if (tree.value.data.length === 1 && tree.value.data[0].parentId === '' && tree.value.data[0].children.length === 0) {
       tree.value?.remove(tree.value.data[0])
     }
   }
