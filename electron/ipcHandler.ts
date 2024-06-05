@@ -136,8 +136,7 @@ export const handlerOpenFileSaveDialog = async (event:IpcMainInvokeEvent,filesTr
     try{
       // 创建目录
       fs.mkdirSync(targetFolder,{recursive:true})
-      // 递归去复制文件
-      
+      // 循环树复制文件
       filesTreeDataChoosed.forEach(fileNode => {
         saveFilesTree(targetFolder,fileNode,fileNode.fullPath)
       });
@@ -164,13 +163,23 @@ export const handlerOpenFileSaveDialog = async (event:IpcMainInvokeEvent,filesTr
  */
 const saveFilesTree = (targetFolder:string,filesTree:TreeNode,filesTreeRootFolder:string) => {
 
-  if(filesTree.parentId != ''){ // 不是根节点的时候，才会创建文件，原来的根节点，被 targetFolder 替换了
+
     let fullPathOld = filesTree.fullPath;
-    let relavitePath = filesTree.fullPath.replace(filesTreeRootFolder,'')
+    let relavitePath = fullPathOld.replace(filesTreeRootFolder,'')
     let targetPath = path.join(targetFolder,relavitePath)
+    console.log('saveFilesTree : fullPathOld : ',fullPathOld)
+    console.log('saveFilesTree : relavitePath : ',relavitePath)
+    console.log('saveFilesTree : targetPath : ',targetPath)
+    console.log('------')
+
     if(filesTree.isDir){ // 是文件夹
+      console.log('saveFilesTree : isDir : ',filesTree.isDir)
       // 创建文件夹
       fs.mkdirSync(targetPath,{recursive:true})
+      // 递归创建子节点
+      filesTree.children.forEach(childNode => {
+        saveFilesTree(targetFolder,childNode,filesTreeRootFolder)
+      });
     }else{ // 是文件
       // 复制文件
       const source = fs.createReadStream(fullPathOld);
@@ -181,12 +190,11 @@ const saveFilesTree = (targetFolder:string,filesTree:TreeNode,filesTreeRootFolde
     .on('error', (err) => console.error('复制过程中出错:', err));
      
     }
-  }else{
-    filesTree.children.forEach(childNode => {
-      saveFilesTree(targetFolder,childNode,filesTreeRootFolder)
-    });
+
+
+
    
-  }
+   
 
 
 } 
