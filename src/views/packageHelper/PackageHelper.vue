@@ -21,9 +21,11 @@
             <el-button type="primary" size="small" :icon="DArrowRight"   style="margin-left: 55%;" @click="changeTreeLeft"/>
           </template>
           <div class="el-tree-box">
+            <el-input v-model="filterTextLeft" clearable style="width: 100%;" placeholder="Filter keyword" />
             <el-scrollbar max-height="600px">
               <el-tree ref="filesTree" empty-text="暂无数据" :data="filesTreeData" :props="treeProps" 
-                    node-key="id" show-checkbox  default-expand-all class="tree-class" >
+                    node-key="id" show-checkbox  default-expand-all class="tree-class" 
+                    :filter-node-method="filterNodeLeft" >
                 
                 <!-- node : 当前的节点对象；data : 当前节点的数据 -->
                 <template #default="{ node, data }">
@@ -51,9 +53,11 @@
           </template>
 
           <div class="el-tree-box">
+            <el-input v-model="filterTextRight" clearable style="width: 100%;" placeholder="Filter keyword" />
             <el-scrollbar max-height="600px">
               <el-tree ref="filesTreeChoosed" empty-text="暂未选中数据" :data="filesTreeDataChoosed" :props="treeProps" 
-                  node-key="id" show-checkbox  default-expand-all class="tree-class">
+                  node-key="id" show-checkbox  default-expand-all class="tree-class"
+                  :filter-node-method="filterNodeRight" >
                 <!-- node : 当前的节点对象；data : 当前节点的数据 -->
                 <template #default="{ node, data }">
                     <span class="node-data-class">
@@ -77,7 +81,7 @@
 
 <script setup lang="ts">
 
-  import { ref,reactive,toRaw } from 'vue';
+  import { ref,reactive,toRaw,watch } from 'vue';
 
   import { ElTree,ElMessage } from 'element-plus'
 
@@ -92,12 +96,14 @@
 
   // 树形组件的数据类型
   import type { TreeNode } from './PackageHelperType'
-import type { TreeNodeData } from 'element-plus/es/components/tree-v2/src/types.mjs';
+  import type { TreeNodeData } from 'element-plus/es/components/tree-v2/src/types.mjs';
 
   // 左侧的待选择的树对象
   const filesTree = ref<InstanceType<typeof ElTree>>()
+  const filterTextLeft = ref('')
   // 右侧的已经选中的树对象
   const filesTreeChoosed = ref<InstanceType<typeof ElTree>>()
+  const filterTextRight = ref('')
 
   // 树形组件的配置
   const treeProps = {
@@ -127,6 +133,42 @@ import type { TreeNodeData } from 'element-plus/es/components/tree-v2/src/types.
       })
     }
     // console.log('filesTreeData :',filesTreeData)
+  }
+
+  /**
+   * 左侧树的过滤操作
+   */
+  watch(filterTextLeft, (val) => {
+    filesTree.value!.filter(val)
+  })
+  /**
+   * 右侧树的过滤操作
+   */
+  watch(filterTextRight, (val) => {
+    filesTreeChoosed.value!.filter(val)
+  })
+  /**
+   * 左侧树的搜索过滤方法
+   * @param value 
+   * @param data 
+   */
+  const filterNodeLeft = (value:string,data:TreeNode) => {
+    if(!value){
+     return true
+    }
+    return data.label.includes(value)
+  }
+
+  /**
+   * 右侧树的搜索过滤方法
+   * @param value 
+   * @param data 
+   */
+  const filterNodeRight = (value:string,data:TreeNode) => {
+    if(!value){
+     return true
+    }
+    return data.label.includes(value)
   }
 
   /**
@@ -242,13 +284,13 @@ import type { TreeNodeData } from 'element-plus/es/components/tree-v2/src/types.
     });
     // 遍历所有的选中的目录节点，将匹配的节点剔除 : 需要倒叙遍历
     dirNodeList.reverse().forEach(element => {
-      console.log('dirnode : ' ,element)
+      //console.log('dirnode : ' ,element)
       // 子节点数组是空的时候，顺便剔除这个节点
       if(element.children.length == 0){
         tree.value?.remove(element)
       }
 
-      console.log('------')
+      //console.log('------')
       
     });
 
@@ -432,6 +474,12 @@ import type { TreeNodeData } from 'element-plus/es/components/tree-v2/src/types.
   color: aliceblue;
   font-weight: bold;
   margin-right: 5px;
+}
+
+/* 搜索框的样式 */
+:deep(.el-input){
+  --el-input-text-color: rgb(4, 208, 244);
+  --el-input-bg-color: rgba(16, 16, 16, 0.078);
 }
 
 .el-tree-box{
