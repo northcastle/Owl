@@ -5,9 +5,11 @@
     <el-row style="border: 0px solid red;margin-top: 30px;">
       <el-col :span="24">
         <el-button type="primary" @click="showOpenFileDialog">Open &nbsp;<el-icon><FolderOpened /></el-icon></el-button>
+        <el-button type="warning" @click="resetTreeData">Reset &nbsp;<el-icon><Refresh /></el-icon></el-button>
+        <el-button type="success" @click="showSaveFileDialog">Save &nbsp;<el-icon><Finished /></el-icon></el-button>
       </el-col>
     </el-row>
-    
+
     <el-divider border-style="dashed"></el-divider>
 
     <el-row>
@@ -29,7 +31,7 @@
                     <el-image v-if="data.isDir":src="folderIcon" style="height: 20px;"/>
                     <el-image v-else :src="fileIcon" style="height: 14px;"/>
                     <span>
-                      {{ node.label }}
+                      {{ node.label }} - {{ data.$treeNodeId }}
                     </span>
                   </span>
                 </template>
@@ -43,7 +45,7 @@
       <el-col :span="11" :offset="2" >
         <el-card class="card-container card-container-2" style="text-align: right;">
           <template #header>
-            <el-button type="warning" size="small" :icon="DArrowLeft"   style="margin-right: 55%;"/>
+            <el-button type="warning" size="small" :icon="DArrowLeft" @click="changeTreeRight" style="margin-right: 55%;"/>
             <span class="card-header-right">已选中的文件树</span>
           </template>
 
@@ -57,7 +59,7 @@
                       <el-image v-if="data.isDir":src="folderGreenIcon" style="height: 20px;"/>
                       <el-image v-else :src="fileGreenIcon" style="height: 14px;"/>
                       <span>
-                        {{ node.label }}
+                        {{ node.label }} - {{ data.$treeNodeId }}
                       </span>
                     </span>
                   </template>
@@ -114,6 +116,7 @@ import type { TreeNodeData } from 'element-plus/es/components/tree-v2/src/types.
     // console.log('chooseFilePath :',chooseFilePath)
     // 先清空一下原来的数据
     filesTreeData.splice(0,filesTreeData.length)
+    filesTreeDataChoosed.splice(0,filesTreeDataChoosed.length)
     // 再放入新的数据
     if(chooseFilePath){
       chooseFilePath.forEach(item => {
@@ -131,32 +134,40 @@ import type { TreeNodeData } from 'element-plus/es/components/tree-v2/src/types.
   }
 
   /**
+   * 右侧的树的数据修改
+   */
+  const changeTreeRight = () =>{
+    confirmChooseFiles(filesTreeChoosed,filesTree)
+  }
+
+  /**
    * 确定选中的文件 
    * @param treeFrom : 选中节点的树
    * @param treeTo : 节点要转移过去的树
    */
   const confirmChooseFiles = (treeFrom:any,treeTo:any) => {
-    if(filesTreeData.length > 0){
-      // 先清空一下原来的数据
-      filesTreeDataChoosed.splice(0,filesTreeDataChoosed.length)
-      // 获取选中的文件数组
+    //if(filesTreeData.length > 0){
+      // 先清空一下原来的数据 - 不用清空数据了
+      // filesTreeDataChoosed.splice(0,filesTreeDataChoosed.length)
+      // 获取选中的文件数组（包含顶层的根节点）
       let choosedFilesList:TreeNodeData[] = treeFrom.value!.getCheckedNodes(false, true)
-      console.log('选中的文件列表 :',choosedFilesList)
-      // 遍历选中的文件列表
+      //console.log('选中的文件列表 :',choosedFilesList)
+      // 处理选中的文件列表
       if(choosedFilesList && choosedFilesList.length > 0){
         // 创建新的右侧的数据列表
-        let rootData =  choosedFilesList.splice(0,1)[0]
-        console.log('根目录数据 :',rootData)
-        console.log('剩余目录数据 :',choosedFilesList)
+        // let rootData =  choosedFilesList.splice(0,1)[0]
+        // console.log('根目录数据 :',rootData)
+        // console.log('剩余目录数据 :',choosedFilesList)
 
-        createTreeNew(rootData,choosedFilesList,filesTreeDataChoosed)
-        console.log('创建后的树 :',filesTreeDataChoosed)
+        // createTreeNew(rootData,choosedFilesList,filesTreeDataChoosed)
+        refreshTreeNodesAdd(treeTo,choosedFilesList)
+        //console.log('创建后的树 :',filesTreeDataChoosed)
 
         // 刷新左侧的待选列表，剔除已经选中的数据
         refreshTreeNodesDelete(treeFrom,choosedFilesList)
 
       }
-    }
+    //}
   }
 
   /**
@@ -217,8 +228,8 @@ import type { TreeNodeData } from 'element-plus/es/components/tree-v2/src/types.
    * @param choosedNodeData 选中的节点数据
    */
   const refreshTreeNodesDelete = (tree:any,choosedList:TreeNodeData[])=>{
-    // 目录节点
-    let dirNodeList:TreeNodeData[] = choosedList.filter(item => item.isDir)
+    // 目录节点(剔除顶层的根节点)
+    let dirNodeList:TreeNodeData[] = choosedList.filter(item => item.isDir && item.parentId != '')
     // 文件节点
     let fileNodeList:TreeNodeData[] = choosedList.filter(item => !item.isDir)
     
@@ -243,7 +254,102 @@ import type { TreeNodeData } from 'element-plus/es/components/tree-v2/src/types.
    * @param choosedList 选中的节点数据
    */
   const refreshTreeNodesAdd = (tree:any,choosedList:TreeNodeData[])=>{
+    //console.log('添加选中的节点-树对象的数据 :',tree.value.data)
+    //console.log('添加选中的节点-选中的节点数组 :',choosedList)
 
+     // 目录节点
+     let dirNodeList:TreeNodeData[] = choosedList.filter(item => item.isDir)
+    // 文件节点
+    let fileNodeList:TreeNodeData[] = choosedList.filter(item => !item.isDir)
+
+    // 先添加目录节点
+    dirNodeList.forEach(element => {
+      let elementId = element.id; // 节点id
+      let elementParentId = element.parentId; // 父节点的id
+      if(elementParentId === ''){ // 根节点目录
+        let rootNode = tree.value?.getNode(elementId)
+        //console.log('添加选中的节点 -目录- 根节点 :',rootNode)
+        if(rootNode){ // 已经存在根节点了就不需要加进去了
+          //console.log('添加选中的节点 -目录- 根节点 已经存在了')
+        }else{
+          //console.log('添加选中的节点 -目录- 根节点 不存在，需要添加进来')
+          let rootData:TreeNode = {
+            id: element.id, // 主键值
+            label: element.label, // 节点名称
+            parentId: element.parentId,
+            parentPath:element.parentPath,// 父节点路径
+            fullPath: element.fullPath, // 节点路径
+            isDir: element.isDir, // 是否是文件夹
+            children: [], // 子节点集合
+          }
+          // 放到目标的树中
+          // tree.value?.data.push(rootData)
+          tree.value?.append(rootData,null)
+        }
+      }else{ // 非根节点目录
+         //console.log('tree.value.data : ',tree.value.data)
+         let elementNode = tree.value?.getNode(elementId)
+         //console.log('添加选中的节点 -目录- 非根节点 :',elementNode,'parentId : ',elementParentId)
+        if(elementNode){ // 已经存在了，就不需要加进去了
+        }else{
+          let elementNodeParent = tree.value?.getNode(elementParentId)
+          //console.log('添加选中的节点 -目录- 非根节点 - 父节点 :',elementNodeParent)
+          let folderData:TreeNode = {
+            id: element.id, // 主键值
+            label: element.label, // 节点名称
+            parentId: element.parentId,
+            parentPath:element.parentPath,// 父节点路径
+            fullPath: element.fullPath, // 节点路径
+            isDir: element.isDir, // 是否是文件夹
+            children: [], // 子节点集合
+          }
+          tree.value?.append(folderData,elementNodeParent)
+        }
+      }
+
+     //console.log('------')
+    });
+
+    // 再添加文件节点 : 直接循环，获取父级的节点，然后添加进去即可
+    fileNodeList.forEach(element => {
+      let elementId = element.id; // 节点id
+      let elementParentId = element.parentId; // 父节点的id
+      let elementNode = tree.value?.getNode(elementId)
+      if(elementNode){ // 节点已经存在了，无需重复添加
+
+      }else{ // 节点不存在，添加进去
+        let elementNodeParent = tree.value?.getNode(elementParentId)
+        let fileData:TreeNode = {
+            id: element.id, // 主键值
+            label: element.label, // 节点名称
+            parentId: element.parentId,
+            parentPath:element.parentPath,// 父节点路径
+            fullPath: element.fullPath, // 节点路径
+            isDir: element.isDir, // 是否是文件夹
+            children: [], // 子节点集合
+          }
+          tree.value?.append(fileData,elementNodeParent)
+      }
+
+    });
+
+
+  }
+
+  /**
+   * 重置树数据
+   */
+  const resetTreeData = () =>{
+    filesTreeData.splice(0,filesTreeData.length)
+    filesTreeDataChoosed.splice(0,filesTreeDataChoosed.length)
+  }
+
+  /**
+   * 点击保存按钮，弹出文件保存的对话框
+   */
+  const showSaveFileDialog = () =>{
+    console.log('点击保存按钮')
+    console.log('rightTreeData : ',filesTreeDataChoosed)
   }
   
 </script>
