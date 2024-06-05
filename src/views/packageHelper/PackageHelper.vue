@@ -414,7 +414,7 @@
         // })
 
         let btnIndex = await window.OwlAPI.openSuccessDialog('成功','文件成功保存至【'+saveRes.data+'】目录下！')
-         console.log('btnIndex : ',btnIndex) // 很奇怪，没有拿到，不知道为什么
+        // console.log('btnIndex : ',btnIndex) // 很奇怪，没有拿到，不知道为什么
         if(btnIndex){
           // 重置数据
           resetTreeData()

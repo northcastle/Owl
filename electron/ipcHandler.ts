@@ -218,7 +218,7 @@ export const handlerShowSuccessDialog = async (event:IpcMainInvokeEvent,title:st
     message: message,
     buttons: ['确定']
   })
-  console.log('handler-btnIndex : ',btnIndex)
+  //console.log('handler-btnIndex : ',btnIndex)
   if(btnIndex){
     return btnIndex;
   }
