@@ -31,7 +31,8 @@
                     <el-image v-if="data.isDir":src="folderIcon" style="height: 20px;"/>
                     <el-image v-else :src="fileIcon" style="height: 14px;"/>
                     <span>
-                      {{ node.label }} - {{ data.$treeNodeId }}
+                      {{ node.label }} 
+                      <!-- - {{ data.$treeNodeId }} -->
                     </span>
                   </span>
                 </template>
@@ -59,7 +60,8 @@
                       <el-image v-if="data.isDir":src="folderGreenIcon" style="height: 20px;"/>
                       <el-image v-else :src="fileGreenIcon" style="height: 14px;"/>
                       <span>
-                        {{ node.label }} - {{ data.$treeNodeId }}
+                        {{ node.label }} 
+                        <!-- - {{ data.$treeNodeId }} -->
                       </span>
                     </span>
                   </template>

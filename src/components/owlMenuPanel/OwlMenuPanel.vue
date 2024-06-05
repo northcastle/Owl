@@ -4,11 +4,13 @@
     <el-scrollbar max-height="500px" >
       <el-menu   background-color="rgba(0,0,0,0)" text-color="#fff" :default-active="defaultMenu" :router="true"  >
           <template v-for="menuItem in menuList">
+            <template  v-if="menuItem.isShow">
               <el-menu-item :index="menuItem.routerPath">
                 <el-icon><component :is="menuItem.icon"></component></el-icon>
-                
                 <span>{{ menuItem.text }}</span>
-          </el-menu-item>
+              </el-menu-item>
+            </template>
+             
           </template>
 
         </el-menu>

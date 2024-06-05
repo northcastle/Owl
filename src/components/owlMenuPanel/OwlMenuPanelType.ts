@@ -7,6 +7,7 @@ export interface MenuObj{
     text:string, // 菜单名称
     icon?:string, // 菜单图标
     routerPath?:string, // 菜单路由
+    isShow?:boolean, // 是否显示
 }
 
 /**
