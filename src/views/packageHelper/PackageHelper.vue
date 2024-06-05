@@ -240,9 +240,16 @@ import type { TreeNodeData } from 'element-plus/es/components/tree-v2/src/types.
     fileNodeList.forEach(element => {
       tree.value?.remove(element)
     });
-    // 遍历所有的选中的目录节点，将匹配的节点剔除
-    dirNodeList.forEach(element => {
-      tree.value?.remove(element)
+    // 遍历所有的选中的目录节点，将匹配的节点剔除 : 需要倒叙遍历
+    dirNodeList.reverse().forEach(element => {
+      console.log('dirnode : ' ,element)
+      // 子节点数组是空的时候，顺便剔除这个节点
+      if(element.children.length == 0){
+        tree.value?.remove(element)
+      }
+
+      console.log('------')
+      
     });
 
     // 如果树中只有最顶层的节点了，则剔除掉

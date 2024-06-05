@@ -111,8 +111,8 @@ const readAllFiles = (dirPath:string,folderDataTree:TreeNode[],parentId:string) 
  * @param filesTreeDataChoosed 选中的目录树数据
  */
 export const handlerOpenFileSaveDialog = async (event:IpcMainInvokeEvent,filesTreeDataChoosed:TreeNode[]) => {
-  console.log('handlerOpenFileSaveDialog begin ...')
-  console.log('handlerOpenFileSaveDialog : filesTreeDataChoosed ：',filesTreeDataChoosed)
+  //console.log('handlerOpenFileSaveDialog begin ...')
+  //console.log('handlerOpenFileSaveDialog : filesTreeDataChoosed ：',filesTreeDataChoosed)
 
   // 响应结果
   let resData : ResponseBody ={ code:200, msg:'创建成功', data:''}
@@ -124,7 +124,7 @@ export const handlerOpenFileSaveDialog = async (event:IpcMainInvokeEvent,filesTr
   }
   // 打开文件选择框
   const savePath = dialog.showSaveDialogSync(dialogOptions)
-  console.log('handlerOpenFileSaveDialog : savePath : ',savePath)
+  //console.log('handlerOpenFileSaveDialog : savePath : ',savePath)
   if (savePath) {
     // C:\Users\hongc\Desktop\classes
     let targetFolder = savePath;
@@ -167,13 +167,13 @@ const saveFilesTree = (targetFolder:string,filesTree:TreeNode,filesTreeRootFolde
     let fullPathOld = filesTree.fullPath;
     let relavitePath = fullPathOld.replace(filesTreeRootFolder,'')
     let targetPath = path.join(targetFolder,relavitePath)
-    console.log('saveFilesTree : fullPathOld : ',fullPathOld)
-    console.log('saveFilesTree : relavitePath : ',relavitePath)
-    console.log('saveFilesTree : targetPath : ',targetPath)
-    console.log('------')
+    //console.log('saveFilesTree : fullPathOld : ',fullPathOld)
+    //console.log('saveFilesTree : relavitePath : ',relavitePath)
+    //console.log('saveFilesTree : targetPath : ',targetPath)
+    //console.log('------')
 
     if(filesTree.isDir){ // 是文件夹
-      console.log('saveFilesTree : isDir : ',filesTree.isDir)
+      //console.log('saveFilesTree : isDir : ',filesTree.isDir)
       // 创建文件夹
       fs.mkdirSync(targetPath,{recursive:true})
       // 递归创建子节点
@@ -186,7 +186,9 @@ const saveFilesTree = (targetFolder:string,filesTree:TreeNode,filesTreeRootFolde
       const destination = fs.createWriteStream(targetPath);
 
     source.pipe(destination)
-    .on('finish', () => console.log('文件复制成功！'))
+    .on('finish', () => { 
+      // console.log('文件复制成功！')
+      })
     .on('error', (err) => console.error('复制过程中出错:', err));
      
     }
