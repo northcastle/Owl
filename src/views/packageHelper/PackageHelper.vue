@@ -83,7 +83,7 @@
 
   import { ref,reactive,toRaw,watch } from 'vue';
 
-  import { ElTree,ElMessage } from 'element-plus'
+  import { ElTree,ElMessage,ElNotification } from 'element-plus'
 
   import { DArrowRight,DArrowLeft } from '@element-plus/icons-vue'
 
@@ -405,15 +405,25 @@
       // 重新赋值一遍这个树数据，否则将会是一个代理对象
       let choosedDataList : TreeNode[] = toRaw(filesTreeDataChoosed);
       let saveRes = await window.OwlAPI.openFileSaveDialog(choosedDataList)
-      console.log('vue : saveRes : ',saveRes)
+      //console.log('vue : saveRes : ',saveRes)
     
       if(saveRes && saveRes.code == 200){
-        ElMessage({
-          message: '文件成功保存至【'+saveRes.data+'】目录下！',
-          type: 'success',
-        })
-        // 重置数据
-        resetTreeData()
+        // ElMessage({
+        //   message: '文件成功保存至【'+saveRes.data+'】目录下！',
+        //   type: 'success',
+        // })
+
+        let btnIndex = await window.OwlAPI.openSuccessDialog('成功','文件成功保存至【'+saveRes.data+'】目录下！')
+         console.log('btnIndex : ',btnIndex) // 很奇怪，没有拿到，不知道为什么
+        if(btnIndex){
+          // 重置数据
+          resetTreeData()
+        }else{
+          // 应该是程序出现异常了
+          resetTreeData()
+        }
+
+        
 
       }else{
         ElMessage({

@@ -2,7 +2,7 @@
  * 主进程处理渲染进程的方法
  */
 
-import { IpcMainInvokeEvent,dialog,OpenDialogOptions,SaveDialogSyncOptions} from "electron";
+import { IpcMainInvokeEvent,dialog,OpenDialogOptions,SaveDialogSyncOptions, IpcMainEvent} from "electron";
 
 // 引入目录树数据类型
 import type { TreeNode } from '../src/views/packageHelper/PackageHelperType';
@@ -200,5 +200,28 @@ const saveFilesTree = (targetFolder:string,filesTree:TreeNode,filesTreeRootFolde
 
 
 } 
+
+
+/**
+ * 弹出消息提示
+ * @param event 
+ * @param title 
+ * @param message 
+ */
+export const handlerShowSuccessDialog = async (event:IpcMainInvokeEvent,title:string,message:string)=> {
+
+  let iconPath = path.join(__dirname, '../forgeimages/success.png')
+  let btnIndex = dialog.showMessageBoxSync({
+    type: 'info',
+    title: title,
+    icon:iconPath,
+    message: message,
+    buttons: ['确定']
+  })
+  console.log('handler-btnIndex : ',btnIndex)
+  if(btnIndex){
+    return btnIndex;
+  }
+}
 
 

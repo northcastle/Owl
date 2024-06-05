@@ -20,6 +20,11 @@ contextBridge.exposeInMainWorld('OwlAPI', {
     openFileSaveDialog: (filesTreeDataChoosed:TreeNode[]) => {
         let chooseFilePath = ipcRenderer.invoke('open-file-save-dialog',filesTreeDataChoosed);
         return chooseFilePath;
-    }
+    },
+    // 打开消息框:成功
+    openSuccessDialog: (title:string,message:string) => {
+        ipcRenderer.invoke('open-success-dialog',title,message);
+    },
+    
 
 })
