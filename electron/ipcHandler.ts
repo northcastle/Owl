@@ -2,10 +2,13 @@
  * 主进程处理渲染进程的方法
  */
 
-import { IpcMainInvokeEvent,dialog,OpenDialogOptions} from "electron";
+import { IpcMainInvokeEvent,dialog,OpenDialogOptions,SaveDialogSyncOptions} from "electron";
 
 // 引入目录树数据类型
 import type { TreeNode } from '../src/views/packageHelper/PackageHelperType';
+
+// 引入通用的数据类型
+import {ResponseBody} from './commonType';
 
 // 引入 路径 以及 文件操作的方法
 import fs from "fs";
@@ -13,6 +16,7 @@ import path from "path";
 
 // 引入uuid工具类
 import { v4 as uuidv4 } from 'uuid';
+
 
 
 /**
@@ -100,3 +104,91 @@ const readAllFiles = (dirPath:string,folderDataTree:TreeNode[],parentId:string) 
   });
   
 }
+
+/**
+ * 打开文件保存框处理逻辑
+ * @param event : 事件
+ * @param filesTreeDataChoosed 选中的目录树数据
+ */
+export const handlerOpenFileSaveDialog = async (event:IpcMainInvokeEvent,filesTreeDataChoosed:TreeNode[]) => {
+  console.log('handlerOpenFileSaveDialog begin ...')
+  console.log('handlerOpenFileSaveDialog : filesTreeDataChoosed ：',filesTreeDataChoosed)
+
+  // 响应结果
+  let resData : ResponseBody ={ code:200, msg:'创建成功', data:''}
+
+  // 打开文件选择框的属性配置
+  let dialogOptions : SaveDialogSyncOptions = {
+    title: '选择文件保存目录',
+    properties:['createDirectory'] 
+  }
+  // 打开文件选择框
+  const savePath = dialog.showSaveDialogSync(dialogOptions)
+  console.log('handlerOpenFileSaveDialog : savePath : ',savePath)
+  if (savePath) {
+    // C:\Users\hongc\Desktop\classes
+    let targetFolder = savePath;
+    // 开始保存数据
+    let targetExistFlag = fs.existsSync(targetFolder)
+    if(targetExistFlag){ // 目录已经存在了，先删除然后创建一个新的
+      fs.rmSync(targetFolder,{recursive:true,force:true})
+    }
+    try{
+      // 创建目录
+      fs.mkdirSync(targetFolder,{recursive:true})
+      // 递归去复制文件
+      
+      filesTreeDataChoosed.forEach(fileNode => {
+        saveFilesTree(targetFolder,fileNode,fileNode.fullPath)
+      });
+
+      // 响应成功
+      resData = { code:200, msg:'生成成功！', data:targetFolder}
+
+
+    }catch(e){
+      console.log('handlerOpenFileSaveDialog : e : ',e)
+      resData = { code:500, msg:'生成失败！', data:''}
+    }
+   
+
+  }
+  return resData;
+}
+
+/**
+ * 保存文件
+ * @param targetFolder 新的路径前缀
+ * @param filesTree 要保存的一棵树
+ * @param filesTreeRootFolder 原来的根节点的目录
+ */
+const saveFilesTree = (targetFolder:string,filesTree:TreeNode,filesTreeRootFolder:string) => {
+
+  if(filesTree.parentId != ''){ // 不是根节点的时候，才会创建文件，原来的根节点，被 targetFolder 替换了
+    let fullPathOld = filesTree.fullPath;
+    let relavitePath = filesTree.fullPath.replace(filesTreeRootFolder,'')
+    let targetPath = path.join(targetFolder,relavitePath)
+    if(filesTree.isDir){ // 是文件夹
+      // 创建文件夹
+      fs.mkdirSync(targetPath,{recursive:true})
+    }else{ // 是文件
+      // 复制文件
+      const source = fs.createReadStream(fullPathOld);
+      const destination = fs.createWriteStream(targetPath);
+
+    source.pipe(destination)
+    .on('finish', () => console.log('文件复制成功！'))
+    .on('error', (err) => console.error('复制过程中出错:', err));
+     
+    }
+  }else{
+    filesTree.children.forEach(childNode => {
+      saveFilesTree(targetFolder,childNode,filesTreeRootFolder)
+    });
+   
+  }
+
+
+} 
+
+

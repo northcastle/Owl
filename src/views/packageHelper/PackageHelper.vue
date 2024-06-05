@@ -75,9 +75,9 @@
 
 <script setup lang="ts">
 
-  import { ref,reactive } from 'vue';
+  import { ref,reactive,toRaw } from 'vue';
 
-  import { ElTree } from 'element-plus'
+  import { ElTree,ElMessage } from 'element-plus'
 
   import { DArrowRight,DArrowLeft } from '@element-plus/icons-vue'
 
@@ -114,11 +114,12 @@ import type { TreeNodeData } from 'element-plus/es/components/tree-v2/src/types.
   const showOpenFileDialog =  async () => {
     const chooseFilePath:TreeNode[] = await window.OwlAPI.openFileDialog()
     // console.log('chooseFilePath :',chooseFilePath)
-    // 先清空一下原来的数据
-    filesTreeData.splice(0,filesTreeData.length)
-    filesTreeDataChoosed.splice(0,filesTreeDataChoosed.length)
-    // 再放入新的数据
+   
     if(chooseFilePath){
+      // 先清空一下原来的数据
+      filesTreeData.splice(0,filesTreeData.length)
+      filesTreeDataChoosed.splice(0,filesTreeDataChoosed.length)
+      // 然后再放入新的数据
       chooseFilePath.forEach(item => {
        filesTreeData.push(item)
       })
@@ -347,9 +348,30 @@ import type { TreeNodeData } from 'element-plus/es/components/tree-v2/src/types.
   /**
    * 点击保存按钮，弹出文件保存的对话框
    */
-  const showSaveFileDialog = () =>{
-    console.log('点击保存按钮')
-    console.log('rightTreeData : ',filesTreeDataChoosed)
+  const showSaveFileDialog = async () =>{
+    // 存在数据的时候，才会去保存
+    if(filesTreeDataChoosed.length > 0){
+      // 重新赋值一遍这个树数据，否则将会是一个代理对象
+      let choosedDataList : TreeNode[] = toRaw(filesTreeDataChoosed);
+      let saveRes = await window.OwlAPI.openFileSaveDialog(choosedDataList)
+      console.log('vue : saveRes : ',saveRes)
+    
+      if(saveRes && saveRes.code == 200){
+        ElMessage({
+          message: '文件成功保存至【'+saveRes.data+'】目录下！',
+          type: 'success',
+        })
+        // 重置数据
+        resetTreeData()
+
+      }else{
+        ElMessage({
+          message: '文件保存失败！',
+          type: 'error',
+        })
+      }
+    }
+    
   }
   
 </script>

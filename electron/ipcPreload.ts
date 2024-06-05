@@ -4,6 +4,8 @@
 
 import { ipcRenderer,contextBridge } from 'electron';
 
+import type { TreeNode } from '../src/views/packageHelper/PackageHelperType';
+
 //  暴露接口给 renderer进程
 contextBridge.exposeInMainWorld('OwlAPI', {
 
@@ -13,5 +15,11 @@ contextBridge.exposeInMainWorld('OwlAPI', {
         let chooseFilePath = ipcRenderer.invoke('open-file-dialog');
         return chooseFilePath;
     },
+
+    // 打开文件保存框  : 双向 ： 会返回选中的路径
+    openFileSaveDialog: (filesTreeDataChoosed:TreeNode[]) => {
+        let chooseFilePath = ipcRenderer.invoke('open-file-save-dialog',filesTreeDataChoosed);
+        return chooseFilePath;
+    }
 
 })
