@@ -97,6 +97,7 @@
   // 树形组件的数据类型
   import type { TreeNode } from './PackageHelperType'
   import type { TreeNodeData } from 'element-plus/es/components/tree-v2/src/types.mjs';
+import type { FilterNodeMethodFunction } from 'element-plus/lib/components/tree/src/tree.type.js';
 
   // 左侧的待选择的树对象
   const filesTree = ref<InstanceType<typeof ElTree>>()
@@ -152,7 +153,7 @@
    * @param value 
    * @param data 
    */
-  const filterNodeLeft = (value:string,data:TreeNode) => {
+  const filterNodeLeft:FilterNodeMethodFunction = (value:string,data:TreeNodeData):boolean => {
     if(!value){
      return true
     }
@@ -164,7 +165,7 @@
    * @param value 
    * @param data 
    */
-  const filterNodeRight = (value:string,data:TreeNode) => {
+  const filterNodeRight:FilterNodeMethodFunction  = (value:string,data:TreeNodeData):boolean => {
     if(!value){
      return true
     }
