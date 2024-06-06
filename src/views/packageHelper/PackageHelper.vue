@@ -33,7 +33,8 @@
                     <el-image v-if="data.isDir":src="folderIcon" style="height: 20px;"/>
                     <el-image v-else :src="fileIcon" style="height: 14px;"/>
                     <span>
-                      {{ node.label }} - {{ data.orderNum }}
+                      {{ node.label }} 
+                      <!-- - {{ data.orderNum }} -->
                       <!-- - {{ data.$treeNodeId }} -->
                     </span>
                   </span>
@@ -64,7 +65,8 @@
                       <el-image v-if="data.isDir":src="folderGreenIcon" style="height: 20px;"/>
                       <el-image v-else :src="fileGreenIcon" style="height: 14px;"/>
                       <span>
-                        {{ node.label }}  - {{ data.orderNum }}
+                        {{ node.label }}  
+                        <!-- - {{ data.orderNum }} -->
                         <!-- - {{ data.$treeNodeId }} -->
                       </span>
                     </span>
@@ -235,6 +237,7 @@
           fullPath: rootData.fullPath, // 节点路径
           isDir: rootData.isDir, // 是否是文件夹
           children: [], // 子节点集合
+          orderNum:rootData.orderNum, // 排序
         }
 
         if(choosedList && choosedList.length > 0){ // 循环子节点进行递归创建
@@ -257,6 +260,7 @@
                       fullPath: element.fullPath, // 节点路径
                       isDir: element.isDir, // 是否是文件夹
                       children: [], // 子节点集合
+                      orderNum:rootData.orderNum, // 排序
                     })
                   }
               }
@@ -420,7 +424,7 @@
         tree.value?.append(nodeData,elementNodeParent)
       }else{ // 已经存在兄弟节点了，则，寻找上一个兄弟节点 and 下一个兄弟节点
         brotherNodeList.push(nodeData)
-        brotherNodeList.sort((a,b) => a.orderNum - b.orderNum) // 升序排序
+        brotherNodeList.sort((a:TreeNode,b:TreeNode) => a.orderNum - b.orderNum) // 升序排序
         let targetIndex = brotherNodeList.indexOf(nodeData) // 获取目标节点的排序后的索引位置
         let reletiveNode = null; // 相对的节点
         if(targetIndex == 0){ // 第一个元素，获取后一个元素
