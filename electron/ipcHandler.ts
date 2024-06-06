@@ -44,11 +44,12 @@ export const handlerOpenFileDialog = async (event:IpcMainInvokeEvent) => {
         parentPath:'',
         fullPath:targetFolder,
         isDir:true,
-        children:[]
+        children:[],
+        orderNum:0
       }
       // 创建要返回给页面的目录树的数据
       let treeData:TreeNode[] = [];
-      readAllFiles(targetFolder,treeData,rootData.id)
+      readAllFiles(targetFolder,treeData,rootData.id,1)
       // 给根节点添加children数据
       rootData.children = treeData;
     
@@ -64,8 +65,9 @@ export const handlerOpenFileDialog = async (event:IpcMainInvokeEvent) => {
  * @param dirPath 目标目录
  * @param folderDataTree 目录树数据
  * @param parentId 父节点id
+ * @param orderNumBegin 节点排序号
  */
-const readAllFiles = (dirPath:string,folderDataTree:TreeNode[],parentId:string) => {
+const readAllFiles = (dirPath:string,folderDataTree:TreeNode[],parentId:string,orderNumBegin:number) => {
   
   let contentPath:string[] = fs.readdirSync (dirPath,{encoding:'utf-8'})
   // console.log('readAllFiles : contentPath : ',contentPath)
@@ -83,10 +85,12 @@ const readAllFiles = (dirPath:string,folderDataTree:TreeNode[],parentId:string) 
         parentPath:dirPath,
         fullPath:filePath,
         isDir:true,
-        children:[]
+        children:[],
+        orderNum:orderNumBegin
       }
       folderDataTree.push(folderNode)
-      readAllFiles(filePath,folderNode.children,folderNode.id)
+      orderNumBegin++;
+      readAllFiles(filePath,folderNode.children,folderNode.id,orderNumBegin)
     }else{
       // 文件 ： 直接创建节点返回
       let fileNode:TreeNode = {
@@ -96,9 +100,11 @@ const readAllFiles = (dirPath:string,folderDataTree:TreeNode[],parentId:string) 
         parentPath:dirPath,
         fullPath:filePath,
         isDir:false,
-        children:[]
+        children:[],
+        orderNum:orderNumBegin
       }
       folderDataTree.push(fileNode)
+      orderNumBegin++;
     }
 
   });

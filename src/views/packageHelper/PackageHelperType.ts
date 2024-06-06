@@ -13,4 +13,5 @@ export interface TreeNode {
     fullPath: string, // 节点路径
     isDir: boolean, // 是否是文件夹
     children: TreeNode[], // 子节点集合
+    orderNum: number, // 排序字段
   }

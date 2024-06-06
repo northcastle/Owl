@@ -33,7 +33,7 @@
                     <el-image v-if="data.isDir":src="folderIcon" style="height: 20px;"/>
                     <el-image v-else :src="fileIcon" style="height: 14px;"/>
                     <span>
-                      {{ node.label }} 
+                      {{ node.label }} - {{ data.orderNum }}
                       <!-- - {{ data.$treeNodeId }} -->
                     </span>
                   </span>
@@ -64,7 +64,7 @@
                       <el-image v-if="data.isDir":src="folderGreenIcon" style="height: 20px;"/>
                       <el-image v-else :src="fileGreenIcon" style="height: 14px;"/>
                       <span>
-                        {{ node.label }} 
+                        {{ node.label }}  - {{ data.orderNum }}
                         <!-- - {{ data.$treeNodeId }} -->
                       </span>
                     </span>
@@ -83,7 +83,7 @@
 
   import { ref,reactive,toRaw,watch } from 'vue';
 
-  import { ElTree,ElMessage,ElNotification } from 'element-plus'
+  import { ElTree,ElMessage } from 'element-plus'
 
   import { DArrowRight,DArrowLeft } from '@element-plus/icons-vue'
 
@@ -97,7 +97,9 @@
   // 树形组件的数据类型
   import type { TreeNode } from './PackageHelperType'
   import type { TreeNodeData } from 'element-plus/es/components/tree-v2/src/types.mjs';
-import type { FilterNodeMethodFunction } from 'element-plus/lib/components/tree/src/tree.type.js';
+
+  // 筛选的过滤方法的函数类型
+  import type { FilterNodeMethodFunction } from 'element-plus/lib/components/tree/src/tree.type.js';
 
   // 左侧的待选择的树对象
   const filesTree = ref<InstanceType<typeof ElTree>>()
@@ -334,6 +336,7 @@ import type { FilterNodeMethodFunction } from 'element-plus/lib/components/tree/
             fullPath: element.fullPath, // 节点路径
             isDir: element.isDir, // 是否是文件夹
             children: [], // 子节点集合
+            orderNum:element.orderNum, // 序号
           }
           // 放到目标的树中
           // tree.value?.data.push(rootData)
@@ -347,7 +350,7 @@ import type { FilterNodeMethodFunction } from 'element-plus/lib/components/tree/
         }else{
           let elementNodeParent = tree.value?.getNode(elementParentId)
           //console.log('添加选中的节点 -目录- 非根节点 - 父节点 :',elementNodeParent)
-          let folderData:TreeNode = {
+          let folderData:TreeNode = { // 目标节点
             id: element.id, // 主键值
             label: element.label, // 节点名称
             parentId: element.parentId,
@@ -355,8 +358,13 @@ import type { FilterNodeMethodFunction } from 'element-plus/lib/components/tree/
             fullPath: element.fullPath, // 节点路径
             isDir: element.isDir, // 是否是文件夹
             children: [], // 子节点集合
+            orderNum: element.orderNum, // 排序
           }
-          tree.value?.append(folderData,elementNodeParent)
+          // 处理节点的排序问题
+          orderAndInsertNode(folderData,elementNodeParent,tree)
+       
+          // 原来的这个直接添加到父节点的方法，不再使用了
+          //tree.value?.append(folderData,elementNodeParent)
         }
       }
 
@@ -380,12 +388,55 @@ import type { FilterNodeMethodFunction } from 'element-plus/lib/components/tree/
             fullPath: element.fullPath, // 节点路径
             isDir: element.isDir, // 是否是文件夹
             children: [], // 子节点集合
+            orderNum: element.orderNum, // 排序
           }
-          tree.value?.append(fileData,elementNodeParent)
+
+          // 处理节点的排序问题
+          orderAndInsertNode(fileData,elementNodeParent,tree)
+         
+          // 直接放到父节点中，没有排序的放法
+          //tree.value?.append(fileData,elementNodeParent)
       }
 
     });
 
+
+  }
+
+
+  /**
+   * 节点排序的方法
+   * @param nodeData 节点数据
+   * @param elementNodeParent 父节点
+   * @param tree 树
+   */
+  const orderAndInsertNode = (nodeData:TreeNode,elementNodeParent:TreeNodeData,tree:any) =>{
+      //console.log('elementNode : ',element)
+      let  elementNodeParentToRaw = toRaw(elementNodeParent) // 目标节点的父节点
+      //console.log('dirnode : elementNodeParentToRaw : ',elementNodeParentToRaw)
+      let brotherNodeList = elementNodeParentToRaw.data.children // 目标节点的兄弟节点
+      //console.log('dirnode : brotherNodeList : ',brotherNodeList)
+      if(brotherNodeList.length == 0){ // 如果还没有兄弟节点，则直接添加进去
+        tree.value?.append(nodeData,elementNodeParent)
+      }else{ // 已经存在兄弟节点了，则，寻找上一个兄弟节点 and 下一个兄弟节点
+        brotherNodeList.push(nodeData)
+        brotherNodeList.sort((a,b) => a.orderNum - b.orderNum) // 升序排序
+        let targetIndex = brotherNodeList.indexOf(nodeData) // 获取目标节点的排序后的索引位置
+        let reletiveNode = null; // 相对的节点
+        if(targetIndex == 0){ // 第一个元素，获取后一个元素
+          let reletiveNodeId  =  brotherNodeList[targetIndex + 1].id
+          reletiveNode = tree.value?.getNode(reletiveNodeId)
+          tree.value?.insertBefore(nodeData,reletiveNode)
+        }else if(targetIndex == (brotherNodeList.length - 1)){ // 最后一个元素，获取前一个元素
+          let reletiveNodeId  =  brotherNodeList[targetIndex - 1].id
+          reletiveNode = tree.value?.getNode(reletiveNodeId)
+          tree.value?.insertAfter(nodeData,reletiveNode)
+        }else{ // 中间的元素，获取前一个元素 or  后一个元素 都行
+          let reletiveNodeId  =  brotherNodeList[targetIndex + 1].id
+          reletiveNode = tree.value?.getNode(reletiveNodeId)
+          tree.value?.insertBefore(nodeData,reletiveNode)
+        }
+    }
 
   }
 
