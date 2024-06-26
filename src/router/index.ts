@@ -36,6 +36,12 @@ const router = createRouter({
           path:'/packageHelper',
           name:'packageHelperView',
           component:() => import('../views/packageHelper/PackageHelper.vue')
+        },
+
+        {
+          path:'/mathCalculater',
+          name:'mathCalculaterView',
+          component:() => import('../views/mathCalculater/MathCalculater.vue')
         }
       ]
     },
