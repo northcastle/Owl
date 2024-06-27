@@ -1,3 +1,31 @@
+
+/**
+ * 算数表达式的对象
+ */
+export interface ArithmeticExpression{
+    id:string, // id
+    expression:string, // 表达式的值（带=）
+    resultCorrect:string, // 表达式的正确结果
+    resultUser:string, // 表达式的用户输入的结果
+    iscorrect:false, // 是否正确
+}
+
+/**
+ * 题目的难度等级
+ * Easy : 简单，只有单运算符
+ * Middle ： 中级，混合运算符
+ * Hard ： 困难，混合运算符和括号
+ */
+export const enum DefficultyLevel{
+    Easy,
+    Middle,
+    Hard,
+}
+
+
+/**
+ * 栈对象
+ */
 export class Stack<T> {
     private items: T[] = [];
 
