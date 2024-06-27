@@ -2,7 +2,7 @@
  * 进行数学运算的核心方法
  */
 
-import { Stack }  from './MathType';
+import { Stack,DefficultyLevel }  from './MathType';
 
 // 操作符集合
 const operatorArray:string[] = ['+','-','×','÷','(',')'];
@@ -232,4 +232,10 @@ export const doCalculate = (expressStr:string):number => {
     }
 
     return result;
+}
+
+
+
+const generateExpression = (level:DefficultyLevel,num:number) =>{
+    
 }
