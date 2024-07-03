@@ -12,14 +12,39 @@ export interface ArithmeticExpression{
 
 /**
  * 题目的难度等级
- * Easy : 简单，只有单运算符
- * Middle ： 中级，混合运算符
- * Hard ： 困难，混合运算符和括号
  */
 export const enum DefficultyLevel{
-    Easy,
-    Middle,
-    Hard,
+    Easy_ADD, // 简单加法,两个操作数
+    Easy_SUB, // 简单减法
+    Easy_MUL, // 简单乘法
+    Easy_DIV, // 简单除法
+
+    Middle_ADD_SUB, // 中等加减法,三个操作数
+    Middle_ADD_MUL, // 中等加乘法,
+    Middle_ADD_DIV, // 中等加除法,
+    Middle_SUB_MUL, // 中等减乘法,
+    Middle_SUB_DIV, // 中等减除法,
+    Middle_MUL_DIV, // 中等乘除法,
+    Middle_ADD_SUB_MUL, // 中等加减乘法,
+    Middle_ADD_SUB_DIV, // 中等加减除法,
+    Middle_ADD_MUL_DIV, // 中等加乘除法,
+    Middle_SUB_MUL_DIV, // 中等减乘除法,
+    Middle_ADD_SUB_MUL_DIV, // 中等减乘除法,四个操作数
+
+    
+    Hard_ADD_SUB_Brackets, // 中等加减法-带括号
+    Hard_ADD_MUL_Brackets, // 中等加乘法,
+    Hard_ADD_DIV_Brackets, // 中等加除法,
+    Hard_SUB_MUL_Brackets, // 中等减乘法,
+    Hard_SUB_DIV_Brackets, // 中等减除法,
+    Hard_MUL_DIV_Brackets, // 中等乘除法,
+    Hard_ADD_SUB_MUL_Brackets, // 中等加减乘法,
+    Hard_ADD_SUB_DIV_Brackets, // 中等加减除法,
+    Hard_ADD_MUL_DIV_Brackets, // 中等加乘除法,
+    Hard_SUB_MUL_DIV_Brackets, // 中等减乘除法,
+
+    Hard_ADD_SUB_MUL_DIV_Brackets, // 困难 : 加减乘除括号 四则混合运算，10个操作数以内
+
 }
 
 

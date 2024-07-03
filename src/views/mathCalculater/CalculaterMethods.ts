@@ -2,7 +2,10 @@
  * 进行数学运算的核心方法
  */
 
-import { Stack,DefficultyLevel }  from './MathType';
+import { Stack,DefficultyLevel, type ArithmeticExpression }  from './MathType';
+
+// 引入uuid工具类
+import { v4 as uuidv4 } from 'uuid';
 
 // 操作符集合
 const operatorArray:string[] = ['+','-','×','÷','(',')'];
@@ -235,7 +238,50 @@ export const doCalculate = (expressStr:string):number => {
 }
 
 
-
-const generateExpression = (level:DefficultyLevel,num:number) =>{
+/**
+ * 生成数学表达式集合
+ * @param level 难度等级
+ * @param num 题目数量
+ * @param operandMin 操作数最小值
+ * @param operandMax 操作数最大值
+ * @returns 运算表达式的值
+ */
+export const generateExpression = (level:DefficultyLevel,num:number,operandMin:number,operandMax:number):Array<ArithmeticExpression> =>{
     
+    let expressionArray:Array<ArithmeticExpression> = [];
+
+    for(let i = 0;i < 10;i++){
+        let operand =  generateNumberWithBoard(operandMin,operandMax)
+        console.log('operand = ',operand)    
+    }
+   
+
+    if(num < 1){
+        num = 10;
+    }
+
+    console.log('目标表达式的难度等级 ： ',level)
+    switch(level){
+        case DefficultyLevel.Easy_ADD:
+            console.log('需要生成简单加法运算')
+            break;
+       
+        case DefficultyLevel.Easy_SUB:
+            break;
+
+        default:
+            break;
+    }
+
+    return expressionArray;
+}
+
+/**
+ * 生成指定范围内的整数
+ * @param minNum 
+ * @param maxNum 
+ */
+const generateNumberWithBoard = (minNum:number,maxNum:number):number=>{
+    let randomNum = Math.floor(Math.random() * (maxNum - minNum + 1)) + minNum;
+    return randomNum
 }
