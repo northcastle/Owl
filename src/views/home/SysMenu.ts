@@ -9,5 +9,5 @@ export const menuList:Array<MenuObj> = [
   {id:'b',text:'打字练习',icon:'Menu',routerPath:'/typingPractice',isShow:true},
   {id:'c',text:'协助打包',icon:'Files',routerPath:'/packageHelper',isShow:true},
   {id:'d',text:'数学练习',icon:'PieChart',routerPath:'/mathCalculater',isShow:true},
-
+  {id:'e',text:'SQL助手',icon:'WindPower',routerPath:'/sqlHelper',isShow:true},
 ]

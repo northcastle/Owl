@@ -42,6 +42,11 @@ const router = createRouter({
           path:'/mathCalculater',
           name:'mathCalculaterView',
           component:() => import('../views/mathCalculater/MathCalculater.vue')
+        },
+        {
+          path:'/sqlHelper',
+          name:'sqlHelperView',
+          component: () => import('../views/sqlHelper/SqlHelper.vue')
         }
       ]
     },
