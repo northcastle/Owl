@@ -9,7 +9,7 @@
     临时保留一下这个步骤进度的值 ： {{ active }}
     <!-- 中间内容 -->
     <div class="content-box">
-       <div v-if="active == 0"> <OwlChooseFile /> </div>
+       <div v-if="active == 0"> <OwlChooseFile style="width: 50%;margin-left: 25%;"/> </div>
        <div v-if="active == 1"> 文件内容展示组件 </div>
        <div v-if="active == 2"> 生成sql组件 </div>
        <div v-if="active == 3"> 生成的sql展示页面 </div>

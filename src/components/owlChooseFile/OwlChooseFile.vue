@@ -5,8 +5,11 @@
    <el-upload class="upload-component" drag
     v-model:file-list="fileList"
     :disabled="false" :multiple="false" :limit="1" :auto-upload="false"
-    :before-upload="handleBefordUpload"
-    :on-preview="handlePreview" >
+    :before-remove="beforeRemove"
+    :on-change="handleChange"
+    :on-preview="handlePreview"
+    :on-remove="handleRemove"
+    :on-exceed="handleExceed" >
     <el-icon class="el-icon--upload"><upload-filled /></el-icon>
     <div class="el-upload__text">
       <!-- Drop file here or <em>click to upload</em> -->
@@ -44,15 +47,11 @@ const fileList = ref<UploadUserFile[]>([
   },
 ])
 
-/**
- * 文件上传之前的钩子
- * @param rawFile 
- */
-const handleBefordUpload:UploadProps['beforeUpload'] = (rawFile: UploadRawFile) => {
- console.log('上传之前的钩子 ： ',rawFile)
- console.log('上传之前的文件列表 ： ',fileList)
- return true;
+const handleChange: UploadProps['onChange'] = (uploadFile, uploadFiles) => {
+  console.log('文件改变 ： ',uploadFile)
+  console.log('文件改变-文件列表 ： ',uploadFiles)
 }
+
 /**
  * 点击选中的文件时触发
  * @param uploadFile 
@@ -62,13 +61,41 @@ const handlePreview: UploadProps['onPreview'] = (uploadFile) => {
   console.log('点击了选中的文件-文件列表 ： ',fileList.value)
 }
 
+/**
+ * 删除之前的动作
+ * @param uploadFile 
+ * @param uploadFiles 
+ */
+const beforeRemove: UploadProps['beforeRemove'] = (uploadFile, uploadFiles) => {
+  console.log('删除之前 ： ',uploadFile)
+  console.log('删除之前-文件列表 ： ',uploadFiles)
+  return true;
+}
+/**
+ * 删除文件
+ * @param file 
+ * @param uploadFiles 
+ */
+const handleRemove: UploadProps['onRemove'] = (file, uploadFiles) => {
+  console.log('删除文件 ： ',file, uploadFiles)
+}
+
+/**
+ * 超出文件个数限制
+ * @param files 
+ * @param uploadFiles 
+ */
+const handleExceed: UploadProps['onExceed'] = (files, uploadFiles) => {
+  console.log('超出限制 ： ',files, uploadFiles)
+}
+
 </script>
 
 <style scoped>
 
 .upload-component{
-  width: 50%;
-  margin-left: 25%;
+  /* width: 50%; */
+  /* margin-left: 25%; */
 }
 .el-upload__text{
   font-size: 1.2rem;
