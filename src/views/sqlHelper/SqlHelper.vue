@@ -85,7 +85,7 @@ const done = () => {
 }
 
 .content-box{
-    border: 1px solid rgb(26, 255, 0);
+    border: 0px solid rgb(26, 255, 0);
     max-height: 650px;
     margin-top: 10px;
 }

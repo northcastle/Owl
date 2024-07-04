@@ -1,9 +1,10 @@
 <!-- 
 选择文件的组件 
+accept=".xlsx,.xls"
 -->
 <template>
-   <el-upload class="upload-component" drag
-    v-model:file-list="fileList"
+   <el-upload ref="uploadFileC" class="upload-component" drag
+    v-model:file-list="fileList" accept=".ico,.png"
     :disabled="false" :multiple="false" :limit="1" :auto-upload="false"
     :before-remove="beforeRemove"
     :on-change="handleChange"
@@ -32,24 +33,33 @@
 import { ref } from 'vue'
 
 import { UploadFilled } from '@element-plus/icons-vue'
+import { ElMessage, ElMessageBox } from 'element-plus'
 
-import type { UploadProps, UploadUserFile ,UploadRawFile} from 'element-plus'
+import type {UploadInstance, UploadProps, UploadUserFile } from 'element-plus'
 
 
-const fileList = ref<UploadUserFile[]>([
-  {
-    name: 'food.jpeg',
-    url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100',
-  },
-  {
-    name: 'food2.jpeg',
-    url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100',
-  },
-])
+const uploadFileC = ref<UploadInstance>()
 
+const fileList = ref<UploadUserFile[]>([])
+
+/**
+ * 文件状态改变时的钩子，添加文件、上传成功和上传失败时都会被调用
+ * @param uploadFile 
+ * @param uploadFiles 
+ */
 const handleChange: UploadProps['onChange'] = (uploadFile, uploadFiles) => {
-  console.log('文件改变 ： ',uploadFile)
-  console.log('文件改变-文件列表 ： ',uploadFiles)
+  // 这里可以做一个文件大小的限制
+  if (uploadFile.size && uploadFile.size > 1024 * 1024 * 2) {
+    ElMessage.warning({
+      message:`文件大小不能超过 2MB`,
+      duration: 5000,
+      showClose: true,
+    })
+    // 清空文件列表
+    uploadFileC.value?.clearFiles()
+    fileList.value = []
+    return ;
+  }
 }
 
 /**
@@ -57,8 +67,6 @@ const handleChange: UploadProps['onChange'] = (uploadFile, uploadFiles) => {
  * @param uploadFile 
  */
 const handlePreview: UploadProps['onPreview'] = (uploadFile) => {
-  console.log('点击了选中的文件 ： ',uploadFile)
-  console.log('点击了选中的文件-文件列表 ： ',fileList.value)
 }
 
 /**
@@ -67,9 +75,17 @@ const handlePreview: UploadProps['onPreview'] = (uploadFile) => {
  * @param uploadFiles 
  */
 const beforeRemove: UploadProps['beforeRemove'] = (uploadFile, uploadFiles) => {
-  console.log('删除之前 ： ',uploadFile)
-  console.log('删除之前-文件列表 ： ',uploadFiles)
-  return true;
+  return ElMessageBox.confirm(
+    `确定移出当前文件 ${uploadFile.name} ?`,
+    {
+      confirmButtonText: '确定',
+      cancelButtonText: '取消',
+      type: 'warning',
+    }
+  ).then(
+    () => true,
+    () => false
+  )
 }
 /**
  * 删除文件
@@ -77,7 +93,6 @@ const beforeRemove: UploadProps['beforeRemove'] = (uploadFile, uploadFiles) => {
  * @param uploadFiles 
  */
 const handleRemove: UploadProps['onRemove'] = (file, uploadFiles) => {
-  console.log('删除文件 ： ',file, uploadFiles)
 }
 
 /**
@@ -86,7 +101,11 @@ const handleRemove: UploadProps['onRemove'] = (file, uploadFiles) => {
  * @param uploadFiles 
  */
 const handleExceed: UploadProps['onExceed'] = (files, uploadFiles) => {
-  console.log('超出限制 ： ',files, uploadFiles)
+  ElMessage.warning({
+    message:`每次最多上传 ${uploadFiles.length} 个文件，当前文件个数 ${files.length} 个，已达到文件个数上限！ `,
+    duration: 5000,
+    showClose: true,
+  })
 }
 
 </script>
@@ -94,8 +113,9 @@ const handleExceed: UploadProps['onExceed'] = (files, uploadFiles) => {
 <style scoped>
 
 .upload-component{
-  /* width: 50%; */
-  /* margin-left: 25%; */
+  border: 1px solid rgb(193, 186, 186);
+  padding: 10px;
+  border-radius: 5px;
 }
 .el-upload__text{
   font-size: 1.2rem;
