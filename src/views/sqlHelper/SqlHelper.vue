@@ -32,14 +32,14 @@
         <div v-if="active == 2"> 
             <el-row>
                 <el-col :span="24">
-                    <OwlTextPanel v-bind="textPanelProps" @text-for-use-changed="textForUseChanged" />
+                    <OwlTextPanel v-bind="textPanelProps" @text-for-use-changed="textForUseChanged" style="font-size: 16px;"/>
                 </el-col>
             </el-row>
         </div>
        <div v-if="active == 3">  
             <el-row>
                 <el-col :span="24">
-                    <OwlTextPanel v-bind="textPanelForShowProps" />
+                    <OwlTextPanel v-bind="textPanelForShowProps" style="font-size: 16px;"/>
                 </el-col>
             </el-row>
        </div>
@@ -131,7 +131,7 @@ const tableProps: OwlShowTableType = reactive({
 const textPanelProps: OwlTextPanelType = reactive({
     text:'',
     placeholder: '自动生成的SQL',
-    rowsNum: 28,
+    rowsNum: 25,
     autoSizeFlag:false,
     resizeEnum:'none',
     disabledFlag:false,
@@ -144,7 +144,7 @@ const textPanelProps: OwlTextPanelType = reactive({
 const textPanelForShowProps: OwlTextPanelType = reactive({
     text:'',
     placeholder: '自动生成的SQL',
-    rowsNum: 28,
+    rowsNum: 25,
     autoSizeFlag:false,
     resizeEnum:'none',
     disabledFlag:true, // 禁用了这个值
@@ -257,6 +257,7 @@ const showWarningMsg = (msg:string) => {
 选择合适的类型对于优化存储空间、提升查询效率以及保证数据的准确性至关重要。
  */
 const generateSqlAttributesTypeFragment = (fieldType:string,fieldLength:string) :string =>{
+    // console.log(fieldType,'   ',fieldLength)
     let sqlFragment = '';
     switch (fieldType) {
        
@@ -292,17 +293,11 @@ const generateSqlAttributesTypeFragment = (fieldType:string,fieldLength:string) 
         case 'time':sqlFragment = (fieldLength != null && fieldLength.trim() != '') ?  ` time(${Number(fieldLength) > 6 ? 6 : fieldLength}) ` : ` time `;break;
         case 'datetime':sqlFragment = (fieldLength != null && fieldLength.trim() != '') ?  ` datetime(${Number(fieldLength) > 6 ? 6 : fieldLength}) ` : ` datetime `;break;
         case 'timestamp':sqlFragment = (fieldLength != null && fieldLength.trim() != '') ?  ` timestamp(${Number(fieldLength) > 6 ? 6 : fieldLength}) ` : ` timestamp `;break;
+        case 'year':sqlFragment = ` year `;break;
 
-
-        
-        case 'datetime':
-            sqlFragment = `datetime`;
-            break;
-        case 'text':
-            sqlFragment = `text`;
-            break;
         default:
-            sqlFragment =`varchar(${fieldLength})`;
+            sqlFragment = (fieldLength != null && fieldLength.trim() != '') ?  ` varchar(${fieldLength}) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin ` : ` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin `;
+
     }
     return sqlFragment;
 }
@@ -321,7 +316,7 @@ const generateCreateTableSql = () => {
         // tableHeaderList:['序号','字段描述','字段名称','类型','长度','是否必填（Y/N）','主键（Y/N）','备注'],
         let fieldName:string = dataItem['字段名称'];
         let fieldType:string = dataItem['类型'];
-        let fieldLength:string = dataItem['长度'];
+        let fieldLength:string = dataItem['长度'] ? dataItem['长度']+'' : '';
         let fieldIsRequired:string = dataItem['是否必填（Y/N）'];
         let fieldIsPrimaryKey:string = dataItem['主键（Y/N）'];
         let fieldBz:string = dataItem['备注'];
@@ -348,7 +343,7 @@ const generateCreateTableSql = () => {
         // 这地方应该是根据不同的数据类型进行不同的拼接 - 再优化一下
         if(fieldName && fieldName.trim() != ''){ // 属性名称不为空的时候才进行拼接
             fieldName = "`"+fieldName.trim()+"`"
-            sqlAttrubites += `    ${fieldName} ${fieldType}`+ (fieldLength != null ? `(${fieldLength})` : '') +  ` CHARACTER SET utf8mb4 COLLATE utf8mb4_bin ${fieldIsRequired == 'Y' ? 'NOT NULL' : ''} ${bzStr ? bzStr : ''}, \n`
+            sqlAttrubites += `    ${fieldName} `+ generateSqlAttributesTypeFragment(fieldType,fieldLength) + ` ${fieldIsRequired == 'Y' ? 'NOT NULL' : ''} ${bzStr ? bzStr : ''}, \n`
         }
         
         // 只拼接第一个主键的字符串
@@ -437,5 +432,17 @@ const done = () => {
 .bottom-box{
     margin-top: 10px;
     text-align: center;
+}
+
+:deep(.el-textarea .el-textarea__inner){
+    font-weight: bold;
+    color: rgb(255, 255, 255);
+    background-color: rgb(0, 0, 0);
+}
+
+:deep(.el-textarea.is-disabled .el-textarea__inner){
+    font-weight: bold;
+    color: rgb(20, 208, 229);
+    background-color: rgb(0, 0, 0);
 }
 </style>
