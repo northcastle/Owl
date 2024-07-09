@@ -216,6 +216,98 @@ const showWarningMsg = (msg:string) => {
 }
 
 /**
+ * 生成-栏位的类型片段
+ * MySQL 支持多种数据类型，这些类型大致可以分为以下几类：
+
+1. **整数类型（Integer Types）**:
+   - TINYINT：非常小的整数，范围通常是从-128到127，或无符号的0到255。
+   - SMALLINT：小整数，范围大约是-32,768到32,767，或无符号的0到65,535。
+   - MEDIUMINT：中等大小的整数，通常表示范围与INT相似。
+   - INT或INTEGER：常规大小的整数，范围大约是-2^31到2^31-1，或无符号的0到2^32-1。
+   - BIGINT：大整数，范围极大，通常用于非常大的计数。
+   - BIT：位字段类型，用于存储位数据，M范围为1到64，默认为1。
+
+2. **浮点数类型（Floating-Point Types）**:
+   - FLOAT：单精度浮点数，占用4个字节，精度较低。
+   - DOUBLE或DOUBLE PRECISION：双精度浮点数，占用8个字节，精度较高。
+   - DECIMAL或NUMERIC：定点数，提供固定的精度和标度，适合财务数据，存储为字符串，更加精确。
+
+3. **字符串类型（String Types）**:
+   - CHAR：固定长度字符串，分配空间与定义长度一致。
+   - VARCHAR：可变长度字符串，空间按需分配，效率高但管理开销稍大。
+   - TEXT：长文本数据，有不同大小的TEXT类型（TINYTEXT, TEXT, MEDIUMTEXT, LONGTEXT）。
+   - ENUM：枚举类型，只能从预定义的一组字符串中选择。
+   - SET：集合类型，可以从多个预定义的字符串中选择多个值。
+
+4. **日期和时间类型（Date and Time Types）**:
+   - DATE：仅日期，格式为YYYY-MM-DD。
+   - TIME：仅时间，格式为HH:MM:SS。
+   - DATETIME：日期和时间的组合，格式为YYYY-MM-DD HH:MM:SS。
+   - TIMESTAMP：与DATETIME类似，但自动更新且有时间戳特性。
+   - YEAR：仅年份，格式通常为YYYY或YY。
+
+5. **二进制类型（Binary Types）**:
+   - BINARY、VARBINARY：固定或可变长度的二进制字符串。
+   - BLOB、TEXT的二进制版本，如TINYBLOB、MEDIUMBLOB、LONGBLOB等。
+
+6. **特殊类型**:
+   - JSON：用于存储JSON格式的数据。
+   - GEOMETRY：用于存储地理空间数据，包括POINT、LINESTRING、POLYGON、MULTIPOINT、MULTILINESTRING、MULTIPOLYGON和GEOMETRYCOLLECTION等类型。
+
+选择合适的类型对于优化存储空间、提升查询效率以及保证数据的准确性至关重要。
+ */
+const generateSqlAttributesTypeFragment = (fieldType:string,fieldLength:string) :string =>{
+    let sqlFragment = '';
+    switch (fieldType) {
+       
+        case 'tinyint': sqlFragment = ` tinyint `;break;
+        case 'smallint':sqlFragment = ` smallint `;break;
+        case 'mediumint':sqlFragment = ` mediumint `;break;
+        case 'int': sqlFragment = ` int `;break;
+        case 'integer': sqlFragment = ` integer `;break;
+        case 'bigint':  sqlFragment = ` bigint `;break;
+
+        case 'float': sqlFragment = (fieldLength != null && fieldLength.trim() != '') ?  ` float(${fieldLength}) ` : ` float `;break;
+        case 'double':sqlFragment = (fieldLength != null && fieldLength.trim() != '') ?  ` double(${fieldLength}) ` : ` double `;break;
+        case 'decimal':sqlFragment = (fieldLength != null && fieldLength.trim() != '') ?  ` decimal(${fieldLength}) ` : ` decimal `;break;
+        case 'numeric':sqlFragment = (fieldLength != null && fieldLength.trim() != '') ?  ` numeric(${fieldLength}) ` : ` numeric `;break;
+
+        case 'char': sqlFragment = (fieldLength != null && fieldLength.trim() != '') ?  ` char(${fieldLength}) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin ` : ` char(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin `;break;
+        case 'varchar': sqlFragment = (fieldLength != null && fieldLength.trim() != '') ?  ` varchar(${fieldLength}) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin ` : ` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin `;break;
+
+        case 'tinytext':sqlFragment = ` tinytext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin `;break;
+        case 'text':sqlFragment = ` text CHARACTER SET utf8mb4 COLLATE utf8mb4_bin `;break;
+        case 'mediumtext':sqlFragment = ` mediumtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin `;break;
+        case 'longtext':sqlFragment = ` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin `;break;
+
+        case 'binary':sqlFragment = (fieldLength != null && fieldLength.trim() != '') ?  ` binary(${fieldLength}) ` : ` binary(100) `;break;
+        case 'varbinary':sqlFragment = (fieldLength != null && fieldLength.trim() != '') ?  ` varbinary(${fieldLength}) ` : ` varbinary(100) `;break;
+        
+        case 'tinyblob':sqlFragment = ` tinyblob `;break;
+        case 'blob':sqlFragment = ` blob `;break;
+        case 'mediumblob':sqlFragment = ` mediumblob `;break;
+        case 'longblob':sqlFragment = ` longblob `;break;
+
+        case 'date':sqlFragment = ` date `;break;
+        case 'time':sqlFragment = (fieldLength != null && fieldLength.trim() != '') ?  ` time(${Number(fieldLength) > 6 ? 6 : fieldLength}) ` : ` time `;break;
+        case 'datetime':sqlFragment = (fieldLength != null && fieldLength.trim() != '') ?  ` datetime(${Number(fieldLength) > 6 ? 6 : fieldLength}) ` : ` datetime `;break;
+        case 'timestamp':sqlFragment = (fieldLength != null && fieldLength.trim() != '') ?  ` timestamp(${Number(fieldLength) > 6 ? 6 : fieldLength}) ` : ` timestamp `;break;
+
+
+        
+        case 'datetime':
+            sqlFragment = `datetime`;
+            break;
+        case 'text':
+            sqlFragment = `text`;
+            break;
+        default:
+            sqlFragment =`varchar(${fieldLength})`;
+    }
+    return sqlFragment;
+}
+
+/**
  * 生成创建数据表的sql
  */
 const generateCreateTableSql = () => {
