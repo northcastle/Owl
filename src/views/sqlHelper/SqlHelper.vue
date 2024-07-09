@@ -5,12 +5,12 @@
         <el-step title="文件内容" :icon="Document" />
         <el-step title="生成SQL" :icon="Finished"/>
     </el-steps>
-
+<!-- 
     临时保留一下这个步骤进度的值 ： {{ active }} <br>
+ -->
 
-    读取表格的属性 ： {{ tableProps  }} <br>
+    <el-divider border-style="dashed" />
 
-    生成的文本框的值 ： {{  textPanelProps }}
     <!-- 中间内容 -->
     <div class="content-box">
        <div v-if="active == 0"> 
@@ -36,7 +36,13 @@
                 </el-col>
             </el-row>
         </div>
-       <div v-if="active == 3"> 生成的sql展示页面 </div>
+       <div v-if="active == 3">  
+            <el-row>
+                <el-col :span="24">
+                    <OwlTextPanel v-bind="textPanelForShowProps" />
+                </el-col>
+            </el-row>
+       </div>
     </div>
 
     <!-- 下一步按钮 -->
@@ -48,7 +54,14 @@
             </el-button>
         </el-button-group>
 
-        <el-button type="success" :icon="CircleCheckFilled" v-if="active == 3" @click="done">完成</el-button>
+        <el-button-group v-else>
+            <el-button type="primary" :icon="ArrowLeft" @click="last" >上一步</el-button>
+            <el-button type="success" @click="done">
+                完&nbsp;&nbsp;&nbsp;&nbsp;成 <el-icon class="el-icon--right"><CircleCheckFilled /></el-icon>
+            </el-button>
+        </el-button-group>
+
+       
     </div>
     
 </template>
@@ -58,7 +71,7 @@
 import { ref,reactive } from 'vue'
 
 import { UploadFilled,Document,Finished,ArrowLeft,ArrowRight,CircleCheckFilled } from '@element-plus/icons-vue'
-import { ElMessage, ElMessageBox } from 'element-plus'
+import { ElMessage } from 'element-plus'
 
 
 import  OwlChooseFile  from '../../components/owlChooseFile/OwlChooseFile.vue'
@@ -79,7 +92,6 @@ import type { OwlTextPanelType } from '@/components/owlTextPanel/OwlTextPanelTyp
  * 3 生成sql完成
  */
 const active = ref(0)
-
 
 /**
  * 上传文件组件的属性
@@ -175,6 +187,7 @@ const excelDataListReadSuccess = (dataList:Array<JSON>) => {
  * @param text 
  */
 const textForUseChanged = (text:string) => {
+
     textPanelProps.text = text
     // 展示用的文本值也一并更新一下
     textPanelForShowProps.text = text
@@ -184,10 +197,10 @@ const textForUseChanged = (text:string) => {
  * 上一步
  */
 const last = () => {
-    console.log('自减前 ： ',active.value)
+    //console.log('自减前 ： ',active.value)
     if (active.value-- < 0) active.value = 0
-    console.log('自减后 ： ',active.value)
-    console.log('------')
+    //console.log('自减后 ： ',active.value)
+    //console.log('------')
 }
 
 /**
@@ -201,54 +214,113 @@ const showWarningMsg = (msg:string) => {
         showClose: true,
     })
 }
+
+/**
+ * 生成创建数据表的sql
+ */
+const generateCreateTableSql = () => {
+    let sqlTextBegin:string = `CREATE TABLE 'tableName' ( \n`;
+    let sqlAttrubites:string = '';
+    let sqlKeys:string = '';
+    let sqlTextEnd:string = `) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;`
+    
+    tableProps.tableDataList.forEach(dataItem => {
+        //console.log(dataItem)
+        // tableHeaderList:['序号','字段描述','字段名称','类型','长度','是否必填（Y/N）','主键（Y/N）','备注'],
+        let fieldName:string = dataItem['字段名称'];
+        let fieldType:string = dataItem['类型'];
+        let fieldLength:string = dataItem['长度'];
+        let fieldIsRequired:string = dataItem['是否必填（Y/N）'];
+        let fieldIsPrimaryKey:string = dataItem['主键（Y/N）'];
+        let fieldBz:string = dataItem['备注'];
+        let fieldDesc:string = dataItem['字段描述'];
+
+        let bzStr:string = '' ;
+        if(fieldDesc && fieldDesc.trim() != ''){
+            bzStr = ` COMMENT '${fieldDesc} `
+        }
+        if(bzStr.trim() != ''){ 
+            if(fieldBz && fieldBz.trim() != ''){
+                bzStr += ` ${fieldBz} `
+            } 
+          
+        }else{
+            if(fieldBz && fieldBz.trim() != ''){
+                bzStr = ` COMMENT '${fieldBz} `
+            } 
+        }
+        if(bzStr && bzStr.trim() != ''){
+            bzStr += `'`
+        }
+        
+        // 这地方应该是根据不同的数据类型进行不同的拼接 - 再优化一下
+        if(fieldName && fieldName.trim() != ''){ // 属性名称不为空的时候才进行拼接
+            fieldName = "`"+fieldName.trim()+"`"
+            sqlAttrubites += `    ${fieldName} ${fieldType}`+ (fieldLength != null ? `(${fieldLength})` : '') +  ` CHARACTER SET utf8mb4 COLLATE utf8mb4_bin ${fieldIsRequired == 'Y' ? 'NOT NULL' : ''} ${bzStr ? bzStr : ''}, \n`
+        }
+        
+        // 只拼接第一个主键的字符串
+        if(sqlKeys.trim() === '' && fieldIsPrimaryKey == 'Y'){
+            sqlKeys = `    PRIMARY KEY(`+`${fieldName}`+`) \n`
+        }
+
+
+    });
+
+    //sqlAttrubites = sqlAttrubites.substring(0,sqlAttrubites.length - 3) + '\n';
+        
+    textPanelProps.text = sqlTextBegin + sqlAttrubites + sqlKeys + sqlTextEnd;
+    textPanelForShowProps.text = sqlTextBegin + sqlAttrubites + sqlKeys + sqlTextEnd;
+
+}
 /**
  * 下一步
  */
 const next = () => {
 
-    console.log('自增前 ： ',active.value)
+    //console.log('自增前 ： ',active.value)
     if (active.value == 0 && uploadFileProps.fileList.length == 0) {
         showWarningMsg('请选择目标文件后再执行下一步！')
        return;
     }
     
-    if (active.value == 1 && tableProps.tableDataList.length == 0) {
-        showWarningMsg(`未读取到文件内容，请检查文件内容是否正确！`);
-       return;
-    }else{
-        // 组装文件内容
-        let sqlTextBegin:string = `create table 'tableName' ( \n`;
-        let sqlAttrubites:string = '';
-        let sqlKeys:string = '';
-        let sqlTextEnd:string = `) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;`
-        
-        console.log('拼接核心的sql了 ： ',tableProps.tableDataList)
+    if (active.value == 1 ) {
+        if(tableProps.tableDataList.length == 0){
+            showWarningMsg(`未读取到文件内容，请检查文件内容是否正确！`);
+            return;
+        }else{
+            // 组装文件内容
+            generateCreateTableSql();
+        }
+    }
 
+    if(active.value == 2  ) {
+
+        if(textPanelProps.text.trim() == ''){
+            showWarningMsg('请生成SQL后再执行下一步！')
+            return;
+        }
        
-          tableProps.tableDataList.forEach(dataItem => {
-            console.log(dataItem)
-            // tableHeaderList:['序号','字段描述','字段名称','类型','长度','是否必填（Y/N）','主键（Y/N）','备注'],
-             
-            console.log(dataItem['字段描述'])
-            
-          });
-        
-
-
-
-        textPanelProps.text = sqlTextBegin + sqlAttrubites + sqlKeys + sqlTextEnd;
-        textPanelForShowProps.text = sqlTextBegin + sqlAttrubites + sqlKeys + sqlTextEnd;
     }
 
     if (active.value++ > 2) active.value = 0
-    console.log('自增后 ： ',active.value)
-    console.log('----')
+    //console.log('自增后 ： ',active.value)
+    //console.log('----')
     
 }
 
+/**
+ * 点击完成按钮
+ */
 const done = () => {
-   active.value = 0
-   uploadFileProps.fileList = []
+    active.value = 0
+    uploadFileProps.fileList = []
+
+    tableProps.fileList = []
+    tableProps.tableDataList = []
+
+    textPanelProps.text = ''
+    textPanelForShowProps.text = ''
 
 }
 
