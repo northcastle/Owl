@@ -231,3 +231,16 @@ export const handlerShowSuccessDialog = async (event:IpcMainInvokeEvent,title:st
 }
 
 
+/**
+ * 下载 excel 模板
+ * @param event 
+ * @param excelHeaderList excel 模板的表头
+ */
+export const handlerOpenExcelSaveDialog = async (event:IpcMainInvokeEvent,excelHeaderList:string[]) => {
+ 
+  // 打开文件保存的对话框
+  // 获取到路径
+  // 创建excel文件
+  // 响应结果
+  let resData : ResponseBody ={ code:200, msg:'创建成功', data:''}
+}

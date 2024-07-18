@@ -149,25 +149,31 @@ const handleExceed: UploadProps['onExceed'] = (files, uploadFiles) => {
 /**
  * 下载模板
  */
-const downloadTemplete = () => {
+const downloadTemplete = async () => {
 
+  let saveRes = await window.OwlAPI.openExcelSaveDialog(props.excelHeaderList)
+    
+  if(saveRes && saveRes.code == 200){
+    let btnIndex = await window.OwlAPI.openSuccessDialog('成功','文件成功保存至【'+saveRes.data+'】目录下！')
+  }else{
+    ElMessage({message: '文件保存失败！',type: 'error',})
+  }
 
+  // // 创建隐藏的可下载链接
+  // const link = document.createElement('a');
+  // // 构建文件的完整URL，注意使用绝对路径，从 public 开始
+  // link.href = props.templateDownloadFileUrl;
+  // link.style.display = 'none'; // 隐藏链接
+  // document.body.appendChild(link);
 
-  // 创建隐藏的可下载链接
-  const link = document.createElement('a');
-  // 构建文件的完整URL，注意使用绝对路径，从 public 开始
-  link.href = props.templateDownloadFileUrl;
-  link.style.display = 'none'; // 隐藏链接
-  document.body.appendChild(link);
+  // // 设置下载的文件名（对于某些浏览器可能不是必需的，因为它们会默认使用链接中的文件名）
+  // link.download = props.templateDownloadFileName;
 
-  // 设置下载的文件名（对于某些浏览器可能不是必需的，因为它们会默认使用链接中的文件名）
-  link.download = props.templateDownloadFileName;
+  // // 触发点击
+  // link.click();
 
-  // 触发点击
-  link.click();
-
-  // 清理
-  document.body.removeChild(link);
+  // // 清理
+  // document.body.removeChild(link);
 }
 
 </script>

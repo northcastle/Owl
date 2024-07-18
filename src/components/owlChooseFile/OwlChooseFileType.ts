@@ -14,6 +14,8 @@ export interface OwlChooseFileProps {
     templateDownloadFileName:string, // 模板下载名称
     templateDownloadFileUrl:string, // 模板下载地址
     templateDownloadBtnText:string, // 模板下载按钮的文本
+    excelHeaderList:string[], // excel表头
+   
 
 
 }

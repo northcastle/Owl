@@ -113,7 +113,7 @@ const uploadFileProps : OwlChooseFileProps = reactive({
    templateDownloadFileUrl:'/excelTemplete/表结构设计模板.xlsx',
    templateDownloadFileName:'表结构设计模板.xlsx',
    templateDownloadBtnText:'下载模板文件',
-
+   excelHeaderList:['序号','字段描述','字段名称','类型','长度','是否必填（Y/N）','主键（Y/N）','备注'],
 })
 
 /**

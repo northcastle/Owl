@@ -5,7 +5,7 @@
 import {app,BrowserWindow,ipcMain} from 'electron'
 
 // 导入进程处理模块
-import { handlerOpenFileDialog,handlerOpenFileSaveDialog,handlerShowSuccessDialog } from './ipcHandler'
+import { handlerOpenExcelSaveDialog, handlerOpenFileDialog,handlerOpenFileSaveDialog,handlerShowSuccessDialog } from './ipcHandler'
 
 // 导入菜单数据
 import { createMenu } from './appMenu'
@@ -58,6 +58,9 @@ app.whenReady().then(() => {
 
   // 监听文件处理成功的对话框的请求
   ipcMain.handle('open-success-dialog',handlerShowSuccessDialog)
+
+  // 监听处理 excel保存文件对话框的请求
+  ipcMain.handle('open-excel-save-dialog',handlerOpenExcelSaveDialog)
 
   if (!isMac()){
     // 非mac系统
