@@ -31,7 +31,7 @@ accept=".xlsx,.xls"
 
 <script lang="ts" setup>
 
-import { ref } from 'vue'
+import { ref,toRaw } from 'vue'
 
 import { UploadFilled } from '@element-plus/icons-vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
@@ -151,11 +151,14 @@ const handleExceed: UploadProps['onExceed'] = (files, uploadFiles) => {
  */
 const downloadTemplete = async () => {
 
-  let saveRes = await window.OwlAPI.openExcelSaveDialog(props.excelHeaderList)
+  let saveRes = await window.OwlAPI.openExcelSaveDialog(props.templateDownloadFileName,toRaw(props.excelHeaderList))
+  console.log('excel 保存结果 ： ',saveRes)
     
   if(saveRes && saveRes.code == 200){
     let btnIndex = await window.OwlAPI.openSuccessDialog('成功','文件成功保存至【'+saveRes.data+'】目录下！')
-  }else{
+  }else if(saveRes && saveRes.code == 300){
+    // 不做任何的操作
+  } else{
     ElMessage({message: '文件保存失败！',type: 'error',})
   }
 

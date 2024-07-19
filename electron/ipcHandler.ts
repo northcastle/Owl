@@ -17,6 +17,9 @@ import path from "path";
 // 引入uuid工具类
 import { v4 as uuidv4 } from 'uuid';
 
+// 引入exceljs工具类
+import ExcelJS from 'exceljs'
+
 
 
 /**
@@ -236,11 +239,45 @@ export const handlerShowSuccessDialog = async (event:IpcMainInvokeEvent,title:st
  * @param event 
  * @param excelHeaderList excel 模板的表头
  */
-export const handlerOpenExcelSaveDialog = async (event:IpcMainInvokeEvent,excelHeaderList:string[]) => {
+export const handlerOpenExcelSaveDialog = async (event:IpcMainInvokeEvent,templateDownloadFileName:string,excelHeaderList:any[]) => {
  
   // 打开文件保存的对话框
   // 获取到路径
   // 创建excel文件
   // 响应结果
   let resData : ResponseBody ={ code:200, msg:'创建成功', data:''}
+
+    // 打开文件选择框的属性配置
+    let dialogOptions : SaveDialogSyncOptions = {
+      title: '选择文件保存目录',
+      defaultPath:templateDownloadFileName,
+      properties:['createDirectory'] 
+    }
+    // 打开文件选择框
+    const savePath = dialog.showSaveDialogSync(dialogOptions);
+    if (savePath) {
+
+      const workbook = new ExcelJS.Workbook();
+      // 添加一个新的工作表
+      const worksheet = workbook.addWorksheet('Sheet 1');
+      // 添加列
+      worksheet.columns = excelHeaderList;
+
+      // 添加数据行 - 保留动作
+      //worksheet.addRow({ name: '张三', age: 25, job: '程序员' });
+
+      // 写入文件
+      try{
+        await workbook.xlsx.writeFile(savePath);
+        resData = { code:200, msg:'创建成功', data:savePath}
+      }catch(e){
+        resData = { code:500, msg:'', data:''}
+      }
+    
+    }else{
+      resData = { code:300, msg:'取消保存！', data:''}
+    }
+
+
+  return resData;
 }

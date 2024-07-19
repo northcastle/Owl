@@ -113,7 +113,16 @@ const uploadFileProps : OwlChooseFileProps = reactive({
    templateDownloadFileUrl:'/excelTemplete/表结构设计模板.xlsx',
    templateDownloadFileName:'表结构设计模板.xlsx',
    templateDownloadBtnText:'下载模板文件',
-   excelHeaderList:['序号','字段描述','字段名称','类型','长度','是否必填（Y/N）','主键（Y/N）','备注'],
+   excelHeaderList:[
+     {header:'序号',key:'xh',width:10,style:{alignment: { horizontal: 'center' },font: { size: 14, bold: true } }},
+     {header:'字段描述',key:'zdms',width:20,style:{alignment: { horizontal: 'center' },font: { size: 14, bold: true } }},
+     {header:'字段名称',key:'zdmc',width:20,style:{alignment: { horizontal: 'center' },font: { size: 14, bold: true } }},
+     {header:'类型',key:'lx',width:15,style:{alignment: { horizontal: 'center' },font: { size: 14, bold: true } }},
+     {header:'长度',key:'cd',width:15,style:{alignment: { horizontal: 'center' },font: { size: 14, bold: true } }},
+     {header:'是否必填（Y/N）',key:'sfbt',width:26,style:{alignment: { horizontal: 'center' },font: { size: 14, bold: true } }},
+     {header:'主键（Y/N）',key:'zj',width:20,style:{alignment: { horizontal: 'center' },font: { size: 14, bold: true } }},
+     {header:'备注',key:'bz',width:50,style:{alignment: { horizontal: 'center' },font: { size: 14, bold: true } }}
+    ],
 })
 
 /**

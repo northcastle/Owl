@@ -28,8 +28,8 @@ contextBridge.exposeInMainWorld('OwlAPI', {
 
 
     // 打开excel保存框 ： 双向 ： 会返回选中的路径 : 参数 ： excel 模板的表头
-    openExcelSaveDialog: (excelHeaderList:string[]) => {
-        let chooseFilePath = ipcRenderer.invoke('open-excel-save-dialog',excelHeaderList);
+    openExcelSaveDialog: (templateDownloadFileName:string,excelHeaderList:any[]) => {
+        let chooseFilePath = ipcRenderer.invoke('open-excel-save-dialog',templateDownloadFileName,excelHeaderList);
         return chooseFilePath;
     },
     
