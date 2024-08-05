@@ -149,6 +149,9 @@ export const doCalculate = (expressStr:string):number => {
         return NaN;
     }
 
+    // 去除表达式的前后空格
+    expressStr = expressStr.trim();
+
     if(expressStr.indexOf('=') >= 0 && expressStr.indexOf('=') != (expressStr.length - 1)){
         return NaN;
     }
@@ -250,23 +253,27 @@ export const generateExpression = (level:DefficultyLevel,num:number,operandMin:n
     
     let expressionArray:Array<ArithmeticExpression> = [];
 
-    for(let i = 0;i < 10;i++){
-        let operand =  generateNumberWithBoard(operandMin,operandMax)
-        console.log('operand = ',operand)    
-    }
-   
-
-    if(num < 1){
-        num = 10;
-    }
+    // 默认10条数据
+    if(num < 1){ num = 10;}
+    // 操作数最小是0
+    if(operandMin < 0){ operandMin = 0;}
 
     console.log('目标表达式的难度等级 ： ',level)
     switch(level){
         case DefficultyLevel.Easy_ADD:
-            console.log('需要生成简单加法运算')
+            expressionArray = generateEasy_ADD(num,operandMin,operandMax)
             break;
        
         case DefficultyLevel.Easy_SUB:
+            expressionArray = generateEasy_SUB(num,operandMin,operandMax)
+            break;
+
+        case DefficultyLevel.Easy_MUL:
+            expressionArray = generateEasy_MUL(num,operandMin,operandMax)
+            break;
+
+        case DefficultyLevel.Easy_DIV:
+            expressionArray = generateEasy_DIV(num,operandMin,operandMax)
             break;
 
         default:
@@ -284,4 +291,159 @@ export const generateExpression = (level:DefficultyLevel,num:number,operandMin:n
 const generateNumberWithBoard = (minNum:number,maxNum:number):number=>{
     let randomNum = Math.floor(Math.random() * (maxNum - minNum + 1)) + minNum;
     return randomNum
+}
+
+/**
+ * 生成 两个运算数 的 加法运算
+ * @param num 题目个数
+ * @param operandMin 最大值
+ * @param operandMax 最小值
+ * @returns 
+ */
+const generateEasy_ADD = (num:number,operandMin:number,operandMax:number):Array<ArithmeticExpression>=>{
+    let operandArray:Array<ArithmeticExpression> = [];
+    let operandStrArray:Array<string> = [];
+    let i = 0;
+    while(i < num){
+        let operand1 =  generateNumberWithBoard(operandMin,operandMax)
+        let operand2 =  generateNumberWithBoard(operandMin,operandMax)
+        let operandExpression = operand1 + ' + ' + operand2 + ' = ';
+        if(operandStrArray.length > 0 && operandStrArray.indexOf(operandExpression) > -1){
+        }else{
+            let expressionObj:ArithmeticExpression = {
+                id:uuidv4(),
+                expression:operandExpression,
+                resultCorrect:doCalculate(operandExpression)+'',
+                resultUser:'',
+                iscorrect:false, // 表达式的值（带=）
+            }
+            operandArray.push(expressionObj);
+            i++;
+        }
+    }
+
+    return operandArray;
+}
+
+/**
+ * 生成 两个运算数 的 减法运算
+ * @param num 题目个数
+ * @param operandMin 最大值
+ * @param operandMax 最小值
+ * @returns 
+ */
+const generateEasy_SUB = (num:number,operandMin:number,operandMax:number):Array<ArithmeticExpression>=>{
+    let operandArray:Array<ArithmeticExpression> = [];
+    let operandStrArray:Array<string> = [];
+    let i = 0;
+    while(i < num){
+        let operand1 =  generateNumberWithBoard(operandMin,operandMax)
+        let operand2 =  generateNumberWithBoard(operandMin,operand1)
+        let operandExpression = operand1 + ' - ' + operand2 + ' = ';
+        if(operandStrArray.length > 0 && operandStrArray.indexOf(operandExpression) > -1){
+        }else{
+            let expressionObj:ArithmeticExpression = {
+                id:uuidv4(),
+                expression:operandExpression,
+                resultCorrect:doCalculate(operandExpression)+'',
+                resultUser:'',
+                iscorrect:false, // 表达式的值（带=）
+            }
+            operandArray.push(expressionObj);
+            i++;
+        }
+    }
+
+    return operandArray;
+}
+
+/**
+ * 生成 两个运算数 的 乘法运算
+ * @param num 题目个数
+ * @param operandMin 最大值
+ * @param operandMax 最小值
+ * @returns 
+ */
+const generateEasy_MUL = (num:number,operandMin:number,operandMax:number):Array<ArithmeticExpression>=>{
+    let operandArray:Array<ArithmeticExpression> = [];
+    let operandStrArray:Array<string> = [];
+    let i = 0;
+    while(i < num){
+        let operand1 =  generateNumberWithBoard(operandMin,operandMax)
+        let operand2 =  generateNumberWithBoard(operandMin,operandMax)
+        let operandExpression = operand1 + ' × ' + operand2 + ' = ';
+        if(operandStrArray.length > 0 && operandStrArray.indexOf(operandExpression) > -1){
+        }else{
+            let expressionObj:ArithmeticExpression = {
+                id:uuidv4(),
+                expression:operandExpression,
+                resultCorrect:doCalculate(operandExpression)+'',
+                resultUser:'',
+                iscorrect:false, // 表达式的值（带=）
+            }
+            operandArray.push(expressionObj);
+            i++;
+        }
+    }
+
+    return operandArray;
+}
+
+
+/**
+ * 生成 两个运算数 的 除法运算
+ * @param num 题目个数
+ * @param operandMin 最大值
+ * @param operandMax 最小值
+ * @returns 
+ */
+const generateEasy_DIV = (num:number,operandMin:number,operandMax:number):Array<ArithmeticExpression>=>{
+    let operandArray:Array<ArithmeticExpression> = [];
+    let operandStrArray:Array<string> = [];
+    let i = 0;
+    while(i < num){
+        let operand1 =  generateNumberWithBoard(operandMin,operandMax)
+
+        // 寻找 operand1 的因数
+        let factorArray = findFactor(operand1);
+
+        let operand2 = factorArray[generateNumberWithBoard(0,factorArray.length-1)];
+        if(operand2 == 0){
+            continue;
+        }
+        let operandExpression = operand1 + ' ÷ ' + operand2 + ' = ';
+        if(operandStrArray.length > 0 && operandStrArray.indexOf(operandExpression) > -1){
+        }else{
+            let expressionObj:ArithmeticExpression = {
+                id:uuidv4(),
+                expression:operandExpression,
+                resultCorrect:doCalculate(operandExpression)+'',
+                resultUser:'',
+                iscorrect:false, // 表达式的值（带=）
+            }
+            operandArray.push(expressionObj);
+            i++;
+        }
+    }
+
+    return operandArray;
+}
+
+
+/**
+ * 寻找一个数的所有因数
+ * @param num 
+ * @returns 
+ */
+const findFactor = (num:number):Array<number>=>{
+    let factorArray:Array<number> = [];
+    for(let i = 1;i <= num;i++){
+        if(num % i == 0){
+            factorArray.push(i);
+            if (i !== num / i) {
+                factorArray.push(num / i);
+            }
+        }
+    }
+    return factorArray;
 }
