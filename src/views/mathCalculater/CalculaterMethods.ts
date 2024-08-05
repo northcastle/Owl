@@ -445,5 +445,5 @@ const findFactor = (num:number):Array<number>=>{
             }
         }
     }
-    return factorArray;
+    return factorArray.sort((a,b) => a - b);
 }
