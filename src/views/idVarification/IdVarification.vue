@@ -11,8 +11,8 @@
             </el-col>
             <el-col :span="12" :offset="6" style="text-align: center;margin-top: 90px;">
                 <img v-if="varificationResult == 0" :src="varificationWaitingUrl" alt="" width="400">
-                <img v-if="varificationResult == 1" :src="varificationSuccessUrl" alt="" width="400">
-                <img v-if="varificationResult == 2" :src="varificationFialUrl" alt="" width="400">
+                <img v-if="varificationResult == 1" :src="varificationSuccessUrl" alt="" width="400" >
+                <img v-if="varificationResult == 2" :src="varificationFialUrl" alt="" width="400" >
             </el-col>
         </el-row>
 
