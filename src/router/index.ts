@@ -47,6 +47,11 @@ const router = createRouter({
           path:'/sqlHelper',
           name:'sqlHelperView',
           component: () => import('../views/sqlHelper/SqlHelper.vue')
+        },
+        {
+          path:'/idVarification',
+          name:'idVarificationView',
+          component: () => import('../views/idVarification/IdVarification.vue')
         }
       ]
     },
