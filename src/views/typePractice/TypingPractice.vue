@@ -7,13 +7,13 @@
         <el-row>
             <!-- 顶部的事件和准确率 -->
             <el-col :span="12">
-                <div style="height: 70px;margin-right: 5px;">
+                <div style="height: 60px;margin-right: 5px;">
                     <OwlTimer @start-typing="receiveStartTyping" @pause-typing="receivePauseTyping"
                         @stop-typing="receiveStopTyping" @restart-typing="receiveReatartTyping"/>
                 </div> 
             </el-col>
             <el-col :span="12">
-                <div style="height: 70px;margin-left: 5px;">
+                <div style="height: 60px;margin-left: 5px;">
                     <div class="accuracy-container">
                         
                         <el-row>
@@ -265,6 +265,7 @@ const receiveChooseTypingCase = (chooseContent:string)=>{
     border-radius: 10px 10px 10px 10px;
     padding: 10px;
     margin-right: 5px;
+    margin-top: 9px;
 }
 
 
@@ -276,6 +277,7 @@ const receiveChooseTypingCase = (chooseContent:string)=>{
     border-radius: 10px 10px 10px 10px;
     padding: 10px;
     margin-left: 5px;
+    margin-top: 9px;
 }
 
 .el-card-my{

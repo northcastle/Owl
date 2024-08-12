@@ -52,7 +52,7 @@ import avatarUrl from '/owl.png'
     border-radius: 10px;
     /* box-shadow: 0px 0px 10px rgb(187, 184, 184); */
     /* width: 1200px; */
-    height: 800px;
+    height: 798px;
     display: flex;
 
   }
@@ -62,12 +62,12 @@ import avatarUrl from '/owl.png'
     border: 0px solid red;
     text-align: center;
     background-color: rgb(22, 21, 21);
-    border-radius: 10px 0px 0px 10px;
+    border-radius: 0px 0px 0px 0px;
   }
   .content{
     flex:9;
     border: 0px solid red;
-    border-radius: 0px 10px 10px 0px;
+    border-radius: 0px 0px 0px 0px;
     background-color: rgb(0, 0, 0);
     padding-left: 10px;
     padding-right: 10px;

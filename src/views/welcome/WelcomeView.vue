@@ -29,7 +29,7 @@
 
 .welcome-container{
   border: 0px solid red;
-  border-radius: 0px 10px 10px 0px;
+  border-radius: 0px 0px 0px 0px;
   width: calc(100% + 10px + 10px);
   margin-left: -10px;
   height: 100%;
