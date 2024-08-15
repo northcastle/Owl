@@ -7,7 +7,7 @@ export interface ArithmeticExpression{
     expression:string, // 表达式的值（带=）
     resultCorrect:string, // 表达式的正确结果
     resultUser:string, // 表达式的用户输入的结果
-    iscorrect:false, // 是否正确
+    iscorrect:boolean, // 是否正确
 }
 
 /**

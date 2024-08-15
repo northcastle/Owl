@@ -317,6 +317,7 @@ const generateEasy_ADD = (num:number,operandMin:number,operandMax:number):Array<
                 resultUser:'',
                 iscorrect:false, // 表达式的值（带=）
             }
+            operandStrArray.push(operandExpression);
             operandArray.push(expressionObj);
             i++;
         }
@@ -349,6 +350,7 @@ const generateEasy_SUB = (num:number,operandMin:number,operandMax:number):Array<
                 resultUser:'',
                 iscorrect:false, // 表达式的值（带=）
             }
+            operandStrArray.push(operandExpression);
             operandArray.push(expressionObj);
             i++;
         }
@@ -381,6 +383,7 @@ const generateEasy_MUL = (num:number,operandMin:number,operandMax:number):Array<
                 resultUser:'',
                 iscorrect:false, // 表达式的值（带=）
             }
+            operandStrArray.push(operandExpression);
             operandArray.push(expressionObj);
             i++;
         }
@@ -403,16 +406,23 @@ const generateEasy_DIV = (num:number,operandMin:number,operandMax:number):Array<
     let i = 0;
     while(i < num){
         let operand1 =  generateNumberWithBoard(operandMin,operandMax)
+        let operand2 = 0;
 
         // 寻找 operand1 的因数
         let factorArray = findFactor(operand1);
 
-        let operand2 = factorArray[generateNumberWithBoard(0,factorArray.length-1)];
+        if(operand1 == 0){
+            operand2 =  generateNumberWithBoard(0,operandMax);
+        }else{
+            operand2 =  factorArray[generateNumberWithBoard(0,factorArray.length-1)];
+        }
+        
         if(operand2 == 0){
             continue;
         }
         let operandExpression = operand1 + ' ÷ ' + operand2 + ' = ';
         if(operandStrArray.length > 0 && operandStrArray.indexOf(operandExpression) > -1){
+            
         }else{
             let expressionObj:ArithmeticExpression = {
                 id:uuidv4(),
@@ -421,6 +431,7 @@ const generateEasy_DIV = (num:number,operandMin:number,operandMax:number):Array<
                 resultUser:'',
                 iscorrect:false, // 表达式的值（带=）
             }
+            operandStrArray.push(operandExpression);
             operandArray.push(expressionObj);
             i++;
         }
@@ -437,6 +448,9 @@ const generateEasy_DIV = (num:number,operandMin:number,operandMax:number):Array<
  */
 const findFactor = (num:number):Array<number>=>{
     let factorArray:Array<number> = [];
+    if(num == 0){
+        return [1];
+    }
     for(let i = 1;i <= num;i++){
         if(num % i == 0){
             factorArray.push(i);
